@@ -7,7 +7,11 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function make_random_obstacle () {
-    make_grass_lane()
+    if (Math.percentChance(50)) {
+        make_grass_lane()
+    } else {
+        make_road_lane()
+    }
 }
 function delete_all_cover_tiles () {
     for (let sprite of sprites.allOfKind(SpriteKind.TileCover)) {
@@ -53,6 +57,17 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
     }
 })
+function make_road_lane () {
+    for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+        tiles.setWallAt(tiles.getTileLocation(col, 0), false)
+        tiles.setTileAt(tiles.getTileLocation(col, 0), sprites.vehicle.roadHorizontal)
+    }
+    if (Math.percentChance(50)) {
+        tiles.setTileAt(tiles.getTileLocation(0, 0), assets.tile`road_right`)
+    } else {
+        tiles.setTileAt(tiles.getTileLocation(tiles.tilemapColumns() - 1, 0), assets.tile`road_left`)
+    }
+}
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingRight), character.rule(Predicate.FacingRight, Predicate.NotMoving))
