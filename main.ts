@@ -195,6 +195,7 @@ function make_chicken () {
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
     scene.cameraFollowSprite(sprite_player)
 }
+let sprite_car: Sprite = null
 let row_invert = 0
 let chicken_speed = 0
 let sprite_player: Sprite = null
@@ -206,3 +207,28 @@ tiles.setTilemap(tilemap`map`)
 tile_map_cover_tiles()
 make_chicken()
 in_game = true
+game.onUpdateInterval(500, function () {
+    if (Math.percentChance(50)) {
+        if (tiles.getTilesByType(assets.tile`road_right`).length > 0) {
+            sprite_car = sprites.create([assets.image`red_right_facing_car`, assets.image`blue_right_facing_car`, assets.image`pink_right_facing_car`]._pickRandom(), SpriteKind.Enemy)
+            tiles.placeOnRandomTile(sprite_car, assets.tile`road_right`)
+            sprite_car.vx = 50
+            sprite_car.x += -16
+            sprite_car.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.after(250, function () {
+                sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
+            })
+        }
+    } else {
+        if (tiles.getTilesByType(assets.tile`road_left`).length > 0) {
+            sprite_car = sprites.create([assets.image`red_left_facing_car`, assets.image`blue_left_facing_car`, assets.image`pink_left_facing_car`]._pickRandom(), SpriteKind.Enemy)
+            tiles.placeOnRandomTile(sprite_car, assets.tile`road_left`)
+            sprite_car.vx = -50
+            sprite_car.x += 16
+            sprite_car.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.after(250, function () {
+                sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
+            })
+        }
+    }
+})
