@@ -193,6 +193,25 @@ a a a f f f a a a a f f f f a .
 . . f f f f . . . . f f f . . . 
 . . . . . . . . . . . . . . . . 
 `;
+            case "y9~(bPs3:1L7pGKwxlgs":
+            case "eagle":return img`
+. . . . . . d d d . . . . . . 
+. . . . . . d d d . . . . . . 
+. . . . . . d d d . . . . . . 
+. . . . . . e e e . . . . . . 
+. . . . . . e e e . . . . . . 
+. . . . . . e e e . . . . . . 
+e e e e e e e e e e e e e e e 
+e e e e e e e e e e e e e e e 
+. . . . . . e e e . . . . . . 
+. . . . . . e e e . . . . . . 
+. . . . . . e e e . . . . . . 
+. . . . . . e e e . . . . . . 
+. . . . . . 1 1 1 . . . . . . 
+. . . . . . 1 1 1 . . . . . . 
+. . . . . . f 1 f . . . . . . 
+. . . . . . . 4 . . . . . . . 
+`;
         }
         return null;
     })

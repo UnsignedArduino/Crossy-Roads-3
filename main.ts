@@ -4,6 +4,7 @@ namespace SpriteKind {
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingUp), character.rule(Predicate.FacingUp, Predicate.NotMoving))
+        last_move_time = game.runtime()
     }
 })
 function make_random_obstacle () {
@@ -197,16 +198,25 @@ function make_chicken () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     in_game = false
-    sprite.destroy(effects.spray, 100)
+    if (otherSprite == sprite_eagle) {
+        sprite.setFlag(SpriteFlag.Ghost, true)
+        otherSprite.setFlag(SpriteFlag.Ghost, true)
+        sprite.vy = otherSprite.vy
+        sprite.y += -8
+    } else {
+        sprite.destroy(effects.spray, 100)
+    }
     timer.after(2000, function () {
         game.over(false)
     })
 })
 let sprite_car: Sprite = null
+let sprite_eagle: Sprite = null
 let row_invert = 0
 let chicken_speed = 0
 let sprite_player: Sprite = null
 let sprite_tile_cover: Sprite = null
+let last_move_time = 0
 let in_game = false
 info.setScore(0)
 scene.setBackgroundColor(7)
@@ -214,6 +224,22 @@ tiles.setTilemap(tilemap`map`)
 tile_map_cover_tiles()
 make_chicken()
 in_game = true
+last_move_time = game.runtime()
+game.onUpdateInterval(1000, function () {
+    if (game.runtime() - last_move_time > 5000) {
+        in_game = false
+        if (!(sprite_eagle)) {
+            timer.after(500, function () {
+                sprite_eagle = sprites.create(assets.image`eagle`, SpriteKind.Enemy)
+                sprite_eagle.setFlag(SpriteFlag.GhostThroughWalls, true)
+                sprite_eagle.x = sprite_player.x
+                sprite_eagle.bottom = 0
+                sprite_eagle.z = 1
+                sprite_eagle.vy = 200
+            })
+        }
+    }
+})
 game.onUpdateInterval(500, function () {
     if (Math.percentChance(50)) {
         if (tiles.getTilesByType(assets.tile`road_right`).length > 0) {
