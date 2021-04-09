@@ -195,6 +195,13 @@ function make_chicken () {
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
     scene.cameraFollowSprite(sprite_player)
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    in_game = false
+    sprite.destroy(effects.spray, 100)
+    timer.after(2000, function () {
+        game.over(false)
+    })
+})
 let sprite_car: Sprite = null
 let row_invert = 0
 let chicken_speed = 0
