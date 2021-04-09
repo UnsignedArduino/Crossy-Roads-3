@@ -3,25 +3,6 @@ namespace myImages {
 
     helpers._registerFactory("image", function(name: string) {
         switch(helpers.stringTrim(name)) {
-            case "[1U6jviIBch_QAPr`OSt":
-            case "right_side_chicken":return img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . 2 2 . . . . . . . . 
-. . . . . 1 1 1 1 . . . . . . . 
-. . . . . f 1 1 1 . . . . . . . 
-. . . . . 1 1 1 1 . . . . . . . 
-. . . . 4 1 1 1 1 . . . . . . . 
-. . . . . 1 1 1 1 1 1 1 . . . . 
-. . . . . 1 d d d d d 1 1 . . . 
-. . . . . 1 d d d d d 1 1 . . . 
-. . . . . 1 d d d d d 1 . . . . 
-. . . . . 1 1 1 1 1 1 1 . . . . 
-. . . . . . . . 4 . . . . . . . 
-. . . . . . . . 4 . . . . . . . 
-. . . . . . . 4 4 4 . . . . . . 
-`;
             case "MZlUwV,S4XMK|Nx,HSz}":
             case "back_chicken":return img`
 . . . . . . . . . . . . . . . . 
@@ -59,6 +40,25 @@ namespace myImages {
 . . . . . . 4 . . 4 . . . . . . 
 . . . . . . 4 . . 4 . . . . . . 
 . . . . . . 4 . . 4 . . . . . . 
+`;
+            case "[1U6jviIBch_QAPr`OSt":
+            case "right_side_chicken":return img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . 2 2 . . . . . . . . 
+. . . . . 1 1 1 1 . . . . . . . 
+. . . . . f 1 1 1 . . . . . . . 
+. . . . . 1 1 1 1 . . . . . . . 
+. . . . 4 1 1 1 1 . . . . . . . 
+. . . . . 1 1 1 1 1 1 1 . . . . 
+. . . . . 1 d d d d d 1 1 . . . 
+. . . . . 1 d d d d d 1 1 . . . 
+. . . . . 1 d d d d d 1 . . . . 
+. . . . . 1 1 1 1 1 1 1 . . . . 
+. . . . . . . . 4 . . . . . . . 
+. . . . . . . . 4 . . . . . . . 
+. . . . . . . 4 4 4 . . . . . . 
 `;
             case "C%JBR=lamsf2VZQpC/3g":
             case "left_side_chicken":return img`

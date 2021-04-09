@@ -85,6 +85,9 @@ function move_chicken (before: number, after: number) {
                 sprite_player.vy = 0
                 tiles.placeOnTile(sprite_player, tiles.locationOfSprite(sprite_player))
             })
+            if (tiles.locationXY(tiles.locationOfSprite(sprite_player), tiles.XY.row) < 4) {
+                make_new_lane()
+            }
         })
     }
 }
@@ -93,6 +96,30 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         move_chicken(character.rule(Predicate.MovingDown), character.rule(Predicate.FacingDown, Predicate.NotMoving))
     }
 })
+function move_sprites_down () {
+    for (let sprite of sprites.allOfKind(SpriteKind.Player)) {
+        sprite.y += tiles.tileWidth()
+    }
+    for (let sprite of sprites.allOfKind(SpriteKind.Enemy)) {
+        sprite.y += tiles.tileWidth()
+    }
+}
+function make_new_lane () {
+    move_sprites_down()
+    move_tilemap_down()
+}
+function move_tilemap_down () {
+    for (let row = 0; row <= tiles.tilemapRows() - 1; row++) {
+        row_invert = tiles.tilemapRows() - 1 - row
+        for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+            tiles.setTileAt(tiles.getTileLocation(col, row_invert), tiles.getTileAtLocation(tiles.getTileLocation(col, row_invert - 1)))
+            tiles.setWallAt(tiles.getTileLocation(col, row_invert), tiles.tileIsWall(tiles.getTileLocation(col, row_invert - 1)))
+        }
+    }
+    for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+        tiles.setWallAt(tiles.getTileLocation(col, 0), false)
+    }
+}
 function make_chicken () {
     sprite_player = sprites.create(assets.image`back_chicken`, SpriteKind.Player)
     animate_chicken()
@@ -100,6 +127,7 @@ function make_chicken () {
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
     scene.cameraFollowSprite(sprite_player)
 }
+let row_invert = 0
 let chicken_speed = 0
 let sprite_player: Sprite = null
 let in_game = false
