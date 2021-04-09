@@ -170,6 +170,7 @@ function make_new_lane () {
     move_tilemap_down()
     make_random_obstacle()
     tile_map_cover_tiles()
+    info.changeScoreBy(1)
 }
 function tile_map_cover_tiles () {
     cover_tiles(assets.tile`road_right`, sprites.vehicle.roadHorizontal)
@@ -199,6 +200,7 @@ let chicken_speed = 0
 let sprite_player: Sprite = null
 let sprite_tile_cover: Sprite = null
 let in_game = false
+info.setScore(0)
 scene.setBackgroundColor(7)
 tiles.setTilemap(tilemap`map`)
 tile_map_cover_tiles()
