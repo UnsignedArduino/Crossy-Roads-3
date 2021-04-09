@@ -1,8 +1,27 @@
+namespace SpriteKind {
+    export const TileCover = SpriteKind.create()
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingUp), character.rule(Predicate.FacingUp, Predicate.NotMoving))
     }
 })
+function make_random_obstacle () {
+	
+}
+function delete_all_cover_tiles () {
+    for (let sprite of sprites.allOfKind(SpriteKind.TileCover)) {
+        sprite.destroy()
+    }
+}
+function cover_tiles (tile: Image, image2: Image) {
+    for (let location of tiles.getTilesByType(tile)) {
+        sprite_tile_cover = sprites.create(image2, SpriteKind.TileCover)
+        tiles.placeOnTile(sprite_tile_cover, location)
+        sprite_tile_cover.z = -1
+        sprite_tile_cover.setFlag(SpriteFlag.Ghost, true)
+    }
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
@@ -105,8 +124,15 @@ function move_sprites_down () {
     }
 }
 function make_new_lane () {
+    delete_all_cover_tiles()
     move_sprites_down()
     move_tilemap_down()
+    make_random_obstacle()
+    tile_map_cover_tiles()
+}
+function tile_map_cover_tiles () {
+    cover_tiles(assets.tile`road_right`, sprites.vehicle.roadHorizontal)
+    cover_tiles(assets.tile`road_left`, sprites.vehicle.roadHorizontal)
 }
 function move_tilemap_down () {
     for (let row = 0; row <= tiles.tilemapRows() - 1; row++) {
@@ -130,8 +156,10 @@ function make_chicken () {
 let row_invert = 0
 let chicken_speed = 0
 let sprite_player: Sprite = null
+let sprite_tile_cover: Sprite = null
 let in_game = false
 scene.setBackgroundColor(7)
 tiles.setTilemap(tilemap`map`)
+tile_map_cover_tiles()
 make_chicken()
 in_game = true
