@@ -79,9 +79,13 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
 function make_chicken () {
     sprite_player = sprites.create(assets.image`back_chicken`, SpriteKind.Player)
     animate_chicken()
+    tiles.placeOnRandomTile(sprite_player, assets.tile`start`)
+    tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
+    scene.cameraFollowSprite(sprite_player)
 }
 let sprite_player: Sprite = null
 let in_game = false
 scene.setBackgroundColor(7)
+tiles.setTilemap(tilemap`map`)
 make_chicken()
 in_game = true
