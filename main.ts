@@ -65,9 +65,26 @@ function animate_chicken () {
 }
 function move_chicken (before: number, after: number) {
     if (character.matchesRule(sprite_player, character.rule(Predicate.NotMoving))) {
-        character.setCharacterState(sprite_player, before)
-        timer.after(200, function () {
-            character.setCharacterState(sprite_player, character.rule(after))
+        chicken_speed = 5
+        timer.throttle("move_chicken", 1000 / chicken_speed, function () {
+            character.setCharacterState(sprite_player, before)
+            timer.after(200, function () {
+                character.setCharacterState(sprite_player, character.rule(after))
+            })
+            if (before == character.rule(Predicate.MovingRight)) {
+                sprite_player.vx = tiles.tileWidth() * chicken_speed
+            } else if (before == character.rule(Predicate.MovingLeft)) {
+                sprite_player.vx = tiles.tileWidth() * -1 * chicken_speed
+            } else if (before == character.rule(Predicate.MovingDown)) {
+                sprite_player.vy = tiles.tileWidth() * chicken_speed
+            } else if (before == character.rule(Predicate.MovingUp)) {
+                sprite_player.vy = tiles.tileWidth() * -1 * chicken_speed
+            }
+            timer.after(1000 / chicken_speed, function () {
+                sprite_player.vx = 0
+                sprite_player.vy = 0
+                tiles.placeOnTile(sprite_player, tiles.locationOfSprite(sprite_player))
+            })
         })
     }
 }
@@ -83,6 +100,7 @@ function make_chicken () {
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
     scene.cameraFollowSprite(sprite_player)
 }
+let chicken_speed = 0
 let sprite_player: Sprite = null
 let in_game = false
 scene.setBackgroundColor(7)
