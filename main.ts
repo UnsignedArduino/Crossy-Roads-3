@@ -7,11 +7,37 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function make_random_obstacle () {
-	
+    make_grass_lane()
 }
 function delete_all_cover_tiles () {
     for (let sprite of sprites.allOfKind(SpriteKind.TileCover)) {
         sprite.destroy()
+    }
+}
+function make_grass_lane () {
+    for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+        tiles.setWallAt(tiles.getTileLocation(col, 0), false)
+    }
+    tiles.setWallAt(tiles.getTileLocation(0, 0), true)
+    tiles.setTileAt(tiles.getTileLocation(0, 0), sprites.builtin.forestTiles0)
+    tiles.setWallAt(tiles.getTileLocation(tiles.tilemapColumns() - 1, 0), true)
+    tiles.setTileAt(tiles.getTileLocation(tiles.tilemapColumns() - 1, 0), sprites.builtin.forestTiles0)
+    for (let col = 0; col <= tiles.tilemapColumns() - 3; col++) {
+        if (Math.percentChance(75)) {
+            tiles.setTileAt(tiles.getTileLocation(col + 1, 0), assets.tile`grass`)
+        } else if (Math.percentChance(50)) {
+            tiles.setTileAt(tiles.getTileLocation(col + 1, 0), [sprites.castle.tileGrass1, sprites.castle.tileGrass3, sprites.castle.tileGrass2]._pickRandom())
+        } else {
+            tiles.setTileAt(tiles.getTileLocation(col + 1, 0), [
+            sprites.builtin.forestTiles0,
+            sprites.builtin.forestTiles0,
+            sprites.builtin.forestTiles0,
+            sprites.builtin.forestTiles0,
+            sprites.castle.rock0,
+            sprites.castle.rock1
+            ]._pickRandom())
+            tiles.setWallAt(tiles.getTileLocation(col + 1, 0), true)
+        }
     }
 }
 function cover_tiles (tile: Image, image2: Image) {

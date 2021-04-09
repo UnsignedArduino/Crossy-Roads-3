@@ -14,7 +14,7 @@ namespace myTiles {
     helpers._registerFactory("tilemap", function(name: string) {
         switch(helpers.stringTrim(name)) {
             case "map":
-            case "level1":return tiles.createTilemap(hex`0a000900020501020101030101020707070707070707070a02010105010201010302090707070707070707070202050201010401020202020101010106010202020201010108010102020202010301010104020202020202020202020202`, img`
+            case "level1":return tiles.createTilemap(hex`0a00090002050102010103010102060606060606060606090201010501020101030208060606060606060606020205020101040102020202010101010a010202020201010107010102020202010301010104020202020202020202020202`, img`
 2 . . 2 . . . . . 2 
 . . . . . . . . . . 
 2 . . . . 2 . . . 2 
@@ -24,7 +24,7 @@ namespace myTiles {
 2 2 . . . . . . 2 2 
 2 2 . . . . . . 2 2 
 2 2 2 2 2 2 2 2 2 2 
-`, [myTiles.transparency16,myTiles.tile1,sprites.builtin.forestTiles0,sprites.castle.tileGrass1,sprites.castle.tileGrass3,sprites.castle.tileGrass2,sprites.castle.rock0,sprites.vehicle.roadHorizontal,myTiles.tile2,myTiles.tile3,myTiles.tile4], TileScale.Sixteen);
+`, [myTiles.transparency16,myTiles.tile1,sprites.builtin.forestTiles0,sprites.castle.tileGrass1,sprites.castle.tileGrass3,sprites.castle.tileGrass2,sprites.vehicle.roadHorizontal,myTiles.tile2,myTiles.tile3,myTiles.tile4,sprites.castle.rock1], TileScale.Sixteen);
         }
         return null;
     })
