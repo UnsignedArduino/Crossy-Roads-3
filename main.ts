@@ -255,6 +255,14 @@ function make_chicken () {
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
     scene.cameraFollowSprite(sprite_player)
 }
+function sprite_kind_overlapped (target: Sprite, kind: number) {
+    for (let sprite of sprites.allOfKind(kind)) {
+        if (target.overlapsWith(sprite)) {
+            return sprite
+        }
+    }
+    return [][0]
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (otherSprite == sprite_eagle) {
         sprite.setFlag(SpriteFlag.Ghost, true)
@@ -285,19 +293,32 @@ in_game = true
 last_move_time = game.runtime()
 last_lane = ""
 game.onUpdateInterval(1000, function () {
-    if (game.runtime() - last_move_time > 5000) {
-        in_game = false
-        if (!(sprite_eagle)) {
-            timer.after(500, function () {
-                sprite_eagle = sprites.create(assets.image`eagle`, SpriteKind.Enemy)
-                sprite_eagle.setFlag(SpriteFlag.GhostThroughWalls, true)
-                sprite_eagle.x = sprite_player.x
-                sprite_eagle.bottom = 0
-                sprite_eagle.z = 2
-                sprite_eagle.vy = 200
-            })
+    if (false) {
+        if (game.runtime() - last_move_time > 5000) {
+            in_game = false
+            if (!(sprite_eagle)) {
+                timer.after(500, function () {
+                    sprite_eagle = sprites.create(assets.image`eagle`, SpriteKind.Enemy)
+                    sprite_eagle.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    sprite_eagle.x = sprite_player.x
+                    sprite_eagle.bottom = 0
+                    sprite_eagle.z = 2
+                    sprite_eagle.vy = 200
+                })
+            }
         }
     }
+})
+forever(function () {
+    while (!(is_overlapping_kind(sprite_player, SpriteKind.Log))) {
+        pause(100)
+    }
+    sprite_player.vx = sprite_kind_overlapped(sprite_player, SpriteKind.Log).vx
+    timer.after(100, function () {
+        if (!(is_overlapping_kind(sprite_player, SpriteKind.Log))) {
+            sprite_player.vx = 0
+        }
+    })
 })
 game.onUpdateInterval(500, function () {
     if (Math.percentChance(50)) {
