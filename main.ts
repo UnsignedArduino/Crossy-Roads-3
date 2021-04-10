@@ -1,6 +1,16 @@
 namespace SpriteKind {
     export const TileCover = SpriteKind.create()
 }
+function make_lilypad_water_lane () {
+    for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+        tiles.setWallAt(tiles.getTileLocation(col, 0), false)
+        if (Math.percentChance(60)) {
+            tiles.setTileAt(tiles.getTileLocation(col, 0), assets.tile`water`)
+        } else {
+            tiles.setTileAt(tiles.getTileLocation(col, 0), [assets.tile`lilypad_up`, assets.tile`lilypad_down`, assets.tile`lilypad_left`, assets.tile`lilypad_right`]._pickRandom())
+        }
+    }
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingUp), character.rule(Predicate.FacingUp, Predicate.NotMoving))
@@ -8,7 +18,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function make_random_obstacle () {
-    if (Math.percentChance(50)) {
+    if (Math.percentChance(33)) {
+        make_lilypad_water_lane()
+    } else if (Math.percentChance(50)) {
         make_grass_lane()
     } else {
         make_road_lane()
