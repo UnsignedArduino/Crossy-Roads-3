@@ -212,6 +212,25 @@ e e e e e e e e e e e e e e e
 . . . . . . f 1 f . . . . . . 
 . . . . . . . 4 . . . . . . . 
 `;
+            case "825EoiW[T(JunoK=hWkS":
+            case "log":return img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+e e e e e e e e e e e e e e e e 
+c e e e c c c c c c c c e e c c 
+c c c c c e e e e e e c c c c e 
+e e e e e e e e e e e e e e e e 
+c c c c c c c e e e e e c c c c 
+e e e e e e c c c c c c c e e e 
+c e c c c e e e e e e e e e c c 
+c e c e c c c c c c c c c c c e 
+c c c e e e e e e e e e e e e e 
+e e e e e c c c c c e e e c c c 
+c c c c c c e e e c c c c c e c 
+e e e e e e e e e e e e e e e e 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`;
         }
         return null;
     })

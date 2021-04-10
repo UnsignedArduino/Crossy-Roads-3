@@ -203,6 +203,9 @@ function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.Enemy)) {
         sprite.y += tiles.tileWidth()
     }
+    for (let sprite of sprites.allOfKind(SpriteKind.Log)) {
+        sprite.y += tiles.tileWidth()
+    }
 }
 function make_new_lane () {
     delete_all_cover_tiles()
@@ -246,6 +249,7 @@ function move_tilemap_down () {
 }
 function make_chicken () {
     sprite_player = sprites.create(assets.image`back_chicken`, SpriteKind.Player)
+    sprite_player.z = 1
     animate_chicken()
     tiles.placeOnRandomTile(sprite_player, assets.tile`start`)
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
@@ -262,6 +266,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         sprite.destroy(effects.spray, 100)
     }
 })
+let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
@@ -288,7 +293,7 @@ game.onUpdateInterval(1000, function () {
                 sprite_eagle.setFlag(SpriteFlag.GhostThroughWalls, true)
                 sprite_eagle.x = sprite_player.x
                 sprite_eagle.bottom = 0
-                sprite_eagle.z = 1
+                sprite_eagle.z = 2
                 sprite_eagle.vy = 200
             })
         }
@@ -300,7 +305,7 @@ game.onUpdateInterval(500, function () {
             sprite_car = sprites.create([assets.image`red_right_facing_car`, assets.image`blue_right_facing_car`, assets.image`pink_right_facing_car`]._pickRandom(), SpriteKind.Enemy)
             tiles.placeOnRandomTile(sprite_car, assets.tile`road_right`)
             sprite_car.vx = 50
-            sprite_car.x += -16
+            sprite_car.right = 0
             sprite_car.setFlag(SpriteFlag.GhostThroughWalls, true)
             timer.after(250, function () {
                 sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
@@ -311,10 +316,35 @@ game.onUpdateInterval(500, function () {
             sprite_car = sprites.create([assets.image`red_left_facing_car`, assets.image`blue_left_facing_car`, assets.image`pink_left_facing_car`]._pickRandom(), SpriteKind.Enemy)
             tiles.placeOnRandomTile(sprite_car, assets.tile`road_left`)
             sprite_car.vx = -50
-            sprite_car.x += 16
+            sprite_car.left = tiles.tilemapColumns() * tiles.tileWidth()
             sprite_car.setFlag(SpriteFlag.GhostThroughWalls, true)
             timer.after(250, function () {
                 sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
+            })
+        }
+    }
+})
+game.onUpdateInterval(500, function () {
+    if (Math.percentChance(50)) {
+        if (tiles.getTilesByType(assets.tile`water_right`).length > 0) {
+            sprite_log = sprites.create(assets.image`log`, SpriteKind.Log)
+            tiles.placeOnRandomTile(sprite_log, assets.tile`water_right`)
+            sprite_log.vx = 25
+            sprite_log.right = 0
+            sprite_log.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.after(250, function () {
+                sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
+            })
+        }
+    } else {
+        if (tiles.getTilesByType(assets.tile`water_left`).length > 0) {
+            sprite_log = sprites.create(assets.image`log`, SpriteKind.Log)
+            tiles.placeOnRandomTile(sprite_log, assets.tile`water_left`)
+            sprite_log.vx = -25
+            sprite_log.left = tiles.tilemapColumns() * tiles.tileWidth()
+            sprite_log.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.after(250, function () {
+                sprite_log.setFlag(SpriteFlag.AutoDestroy, true)
             })
         }
     }
