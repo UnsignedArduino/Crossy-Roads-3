@@ -1,10 +1,11 @@
 namespace SpriteKind {
     export const TileCover = SpriteKind.create()
+    export const Log = SpriteKind.create()
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
         tiles.setWallAt(tiles.getTileLocation(col, 0), false)
-        if (Math.percentChance(60)) {
+        if (Math.percentChance(50)) {
             tiles.setTileAt(tiles.getTileLocation(col, 0), assets.tile`water`)
         } else {
             tiles.setTileAt(tiles.getTileLocation(col, 0), [assets.tile`lilypad_up`, assets.tile`lilypad_down`, assets.tile`lilypad_left`, assets.tile`lilypad_right`]._pickRandom())
@@ -18,7 +19,10 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function make_random_obstacle () {
-    if (Math.percentChance(33) && last_lane != "lilypad") {
+    if (Math.percentChance(25)) {
+        make_waterway_lanes()
+        last_lane = "waterway"
+    } else if (Math.percentChance(33) && last_lane != "lilypad") {
         make_lilypad_water_lane()
         last_lane = "lilypad"
     } else if (Math.percentChance(50)) {
@@ -68,6 +72,15 @@ function cover_tiles (tile: Image, image2: Image) {
         sprite_tile_cover.setFlag(SpriteFlag.Ghost, true)
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, location) {
+    timer.throttle("check_in_water", 50, function () {
+        timer.after(50, function () {
+            if (sprite.tileKindAt(TileDirection.Center, assets.tile`water`) && !(is_overlapping_kind(sprite, SpriteKind.Log))) {
+                sprite.destroy(effects.fountain, 100)
+            }
+        })
+    })
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
@@ -98,7 +111,7 @@ function animate_chicken () {
     )
     character.runFrames(
     sprite_player,
-    assets.animation`chicken_back_hopping`,
+    [assets.image`back_chicken`],
     50,
     character.rule(Predicate.MovingUp)
     )
@@ -154,7 +167,7 @@ function move_chicken (before: number, after: number) {
             } else if (before == character.rule(Predicate.MovingDown)) {
                 sprite_player.vy = tiles.tileWidth() * chicken_speed
             } else if (before == character.rule(Predicate.MovingUp)) {
-                sprite_player.vy = tiles.tileWidth() * -1 * chicken_speed
+                sprite_player.vy = tiles.tileWidth() * -1 * chicken_speed * 0.9
             }
             timer.after(1000 / chicken_speed, function () {
                 sprite_player.vx = 0
@@ -172,6 +185,17 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         move_chicken(character.rule(Predicate.MovingDown), character.rule(Predicate.FacingDown, Predicate.NotMoving))
     }
 })
+function make_waterway_lanes () {
+    for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+        tiles.setWallAt(tiles.getTileLocation(col, 0), false)
+        tiles.setTileAt(tiles.getTileLocation(col, 0), assets.tile`water`)
+    }
+    if (Math.percentChance(50)) {
+        tiles.setTileAt(tiles.getTileLocation(0, 0), assets.tile`water_right`)
+    } else {
+        tiles.setTileAt(tiles.getTileLocation(tiles.tilemapColumns() - 1, 0), assets.tile`water_left`)
+    }
+}
 function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.Player)) {
         sprite.y += tiles.tileWidth()
@@ -191,7 +215,23 @@ function make_new_lane () {
 function tile_map_cover_tiles () {
     cover_tiles(assets.tile`road_right`, sprites.vehicle.roadHorizontal)
     cover_tiles(assets.tile`road_left`, sprites.vehicle.roadHorizontal)
+    cover_tiles(assets.tile`water_right`, assets.tile`water`)
+    cover_tiles(assets.tile`water_left`, assets.tile`water`)
 }
+function is_overlapping_kind (target: Sprite, kind: number) {
+    for (let sprite of sprites.allOfKind(kind)) {
+        if (target.overlapsWith(sprite)) {
+            return true
+        }
+    }
+    return false
+}
+sprites.onDestroyed(SpriteKind.Player, function (sprite) {
+    in_game = false
+    timer.after(2000, function () {
+        game.over(false)
+    })
+})
 function move_tilemap_down () {
     for (let row = 0; row <= tiles.tilemapRows() - 1; row++) {
         row_invert = tiles.tilemapRows() - 1 - row
@@ -212,18 +252,15 @@ function make_chicken () {
     scene.cameraFollowSprite(sprite_player)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    in_game = false
     if (otherSprite == sprite_eagle) {
         sprite.setFlag(SpriteFlag.Ghost, true)
         otherSprite.setFlag(SpriteFlag.Ghost, true)
+        sprite.setFlag(SpriteFlag.AutoDestroy, true)
         sprite.vy = otherSprite.vy
         sprite.y += -8
     } else {
         sprite.destroy(effects.spray, 100)
     }
-    timer.after(2000, function () {
-        game.over(false)
-    })
 })
 let sprite_car: Sprite = null
 let sprite_eagle: Sprite = null
