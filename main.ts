@@ -1,5 +1,14 @@
 namespace SpriteKind {
     export const TileCover = SpriteKind.create()
+    export const Log = SpriteKind.create()
+}
+function sprite_touching_kind (target: Sprite, kind: number) {
+    for (let sprite of sprites.allOfKind(kind)) {
+        if (target.overlapsWith(sprite)) {
+            return true
+        }
+    }
+    return false
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -18,12 +27,15 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function make_random_obstacle () {
-    if (Math.percentChance(33)) {
+    if (Math.percentChance(33) && last_lane != "lilypad") {
         make_lilypad_water_lane()
+        last_lane = "lilypad"
     } else if (Math.percentChance(50)) {
         make_grass_lane()
+        last_lane = "grass"
     } else {
         make_road_lane()
+        last_lane = "road"
     }
 }
 function delete_all_cover_tiles () {
@@ -65,6 +77,15 @@ function cover_tiles (tile: Image, image2: Image) {
         sprite_tile_cover.setFlag(SpriteFlag.Ghost, true)
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, location) {
+    timer.throttle("check_in_water", 50, function () {
+        timer.after(50, function () {
+            if (sprite.tileKindAt(TileDirection.Center, assets.tile`water`) && !(sprite_touching_kind(sprite, SpriteKind.Log))) {
+                sprite.destroy(effects.fountain, 100)
+            }
+        })
+    })
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
@@ -95,7 +116,7 @@ function animate_chicken () {
     )
     character.runFrames(
     sprite_player,
-    assets.animation`chicken_back_hopping`,
+    [assets.image`back_chicken`],
     50,
     character.rule(Predicate.MovingUp)
     )
@@ -189,6 +210,12 @@ function tile_map_cover_tiles () {
     cover_tiles(assets.tile`road_right`, sprites.vehicle.roadHorizontal)
     cover_tiles(assets.tile`road_left`, sprites.vehicle.roadHorizontal)
 }
+sprites.onDestroyed(SpriteKind.Player, function (sprite) {
+    in_game = false
+    timer.after(2000, function () {
+        game.over(false)
+    })
+})
 function move_tilemap_down () {
     for (let row = 0; row <= tiles.tilemapRows() - 1; row++) {
         row_invert = tiles.tilemapRows() - 1 - row
@@ -209,18 +236,15 @@ function make_chicken () {
     scene.cameraFollowSprite(sprite_player)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    in_game = false
     if (otherSprite == sprite_eagle) {
         sprite.setFlag(SpriteFlag.Ghost, true)
         otherSprite.setFlag(SpriteFlag.Ghost, true)
         sprite.vy = otherSprite.vy
         sprite.y += -8
+        sprite.setFlag(SpriteFlag.AutoDestroy, true)
     } else {
         sprite.destroy(effects.spray, 100)
     }
-    timer.after(2000, function () {
-        game.over(false)
-    })
 })
 let sprite_car: Sprite = null
 let sprite_eagle: Sprite = null
@@ -228,6 +252,7 @@ let row_invert = 0
 let chicken_speed = 0
 let sprite_player: Sprite = null
 let sprite_tile_cover: Sprite = null
+let last_lane = ""
 let last_move_time = 0
 let in_game = false
 info.setScore(0)
@@ -237,6 +262,7 @@ tile_map_cover_tiles()
 make_chicken()
 in_game = true
 last_move_time = game.runtime()
+last_lane = ""
 game.onUpdateInterval(1000, function () {
     if (game.runtime() - last_move_time > 5000) {
         in_game = false
