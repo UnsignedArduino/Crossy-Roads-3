@@ -2,6 +2,7 @@ namespace SpriteKind {
     export const TileCover = SpriteKind.create()
     export const Log = SpriteKind.create()
     export const RedLight = SpriteKind.create()
+    export const Title = SpriteKind.create()
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -304,19 +305,32 @@ let sprite_eagle: Sprite = null
 let row_invert = 0
 let sprite_red_light: Sprite = null
 let chicken_speed = 0
-let sprite_player: Sprite = null
 let sprite_tile_cover: Sprite = null
 let last_lane = ""
 let last_move_time = 0
 let in_game = false
-info.setScore(0)
+let sprite_player: Sprite = null
 scene.setBackgroundColor(7)
 tiles.setTilemap(tilemap`map`)
 tile_map_cover_tiles()
 make_chicken()
-in_game = true
-last_move_time = game.runtime()
-last_lane = ""
+sprite_player.y += 8
+let sprite_intro = sprites.create(assets.image`title_screen`, SpriteKind.Title)
+sprite_intro.top = 25
+sprite_intro.left = 0
+sprite_intro.z = 5
+sprite_intro.setFlag(SpriteFlag.AutoDestroy, false)
+in_game = false
+timer.background(function () {
+    while (!(controller.A.isPressed())) {
+        pause(100)
+    }
+    sprite_intro.ay = -500
+    info.setScore(0)
+    in_game = true
+    last_move_time = game.runtime()
+    last_lane = ""
+})
 game.onUpdateInterval(1000, function () {
     if (in_game && true) {
         if (game.runtime() - last_move_time > 5000) {
