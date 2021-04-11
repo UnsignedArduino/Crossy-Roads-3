@@ -322,45 +322,45 @@ sprite_intro.z = 5
 sprite_intro.setFlag(SpriteFlag.AutoDestroy, false)
 sprite_intro.setFlag(SpriteFlag.Ghost, true)
 let sprite_play_button = sprites.create(assets.image`play_button`, SpriteKind.Title)
-sprite_play_button.x = scene.screenWidth() * 0.7
+sprite_play_button.x = scene.screenWidth() * 0.3
 sprite_play_button.bottom = scene.screenHeight() - -8
 sprite_play_button.z = 5
 sprite_play_button.setFlag(SpriteFlag.AutoDestroy, false)
 sprite_play_button.setFlag(SpriteFlag.Ghost, true)
-let sprite_shop_button = sprites.create(assets.image`shop_button`, SpriteKind.Player)
-sprite_shop_button.x = scene.screenWidth() * 0.3
-sprite_shop_button.bottom = scene.screenHeight() - -8
-sprite_shop_button.z = 5
-sprite_shop_button.setFlag(SpriteFlag.AutoDestroy, false)
-sprite_shop_button.setFlag(SpriteFlag.Ghost, true)
+let sprite_settings_button = sprites.create(assets.image`settings_button`, SpriteKind.Player)
+sprite_settings_button.x = scene.screenWidth() * 0.7
+sprite_settings_button.bottom = scene.screenHeight() - -8
+sprite_settings_button.z = 5
+sprite_settings_button.setFlag(SpriteFlag.AutoDestroy, false)
+sprite_settings_button.setFlag(SpriteFlag.Ghost, true)
 let option_selected = 0
 in_game = false
 timer.background(function () {
     while (!(controller.A.isPressed())) {
         if (option_selected == 0) {
             sprite_play_button.setImage(assets.image`play_button_highlighted`)
-            sprite_shop_button.setImage(assets.image`shop_button`)
+            sprite_settings_button.setImage(assets.image`settings_button`)
         } else if (option_selected == 1) {
             sprite_play_button.setImage(assets.image`play_button`)
-            sprite_shop_button.setImage(assets.image`shop_button_highlighted`)
+            sprite_settings_button.setImage(assets.image`settings_button_highlighted`)
         }
-        if (controller.left.isPressed() && option_selected < 1) {
+        if (controller.right.isPressed() && option_selected < 1) {
             option_selected += 1
-        } else if (controller.right.isPressed() && option_selected > 0) {
+        } else if (controller.left.isPressed() && option_selected > 0) {
             option_selected += -1
         }
         pause(100)
     }
     if (option_selected == 0) {
         sprite_intro.ay = -500
-        sprite_play_button.ax = 500
-        sprite_shop_button.ax = -500
+        sprite_play_button.ax = -500
+        sprite_settings_button.ax = 500
         info.setScore(0)
         in_game = true
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        game.showLongText("The shop is not available yet!", DialogLayout.Center)
+        game.showLongText("No settings yet!", DialogLayout.Center)
         game.reset()
     }
 })
