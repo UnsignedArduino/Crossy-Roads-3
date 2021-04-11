@@ -19,7 +19,10 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function make_random_obstacle () {
-    if (Math.percentChance(25)) {
+    if (Math.percentChance(20)) {
+        make_railway_lane()
+        last_lane = "railway"
+    } else if (Math.percentChance(25)) {
         make_waterway_lanes()
         last_lane = "waterway"
     } else if (Math.percentChance(33) && last_lane != "lilypad") {
@@ -223,6 +226,7 @@ function tile_map_cover_tiles () {
     cover_tiles(assets.tile`road_left`, sprites.vehicle.roadHorizontal)
     cover_tiles(assets.tile`water_right`, assets.tile`water`)
     cover_tiles(assets.tile`water_left`, assets.tile`water`)
+    cover_tiles(assets.tile`railway_right`, assets.tile`railway`)
 }
 function is_overlapping_kind (target: Sprite, kind: number) {
     for (let sprite of sprites.allOfKind(kind)) {
@@ -231,6 +235,13 @@ function is_overlapping_kind (target: Sprite, kind: number) {
         }
     }
     return false
+}
+function make_railway_lane () {
+    for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
+        tiles.setWallAt(tiles.getTileLocation(col, 0), false)
+        tiles.setTileAt(tiles.getTileLocation(col, 0), assets.tile`railway`)
+    }
+    tiles.setTileAt(tiles.getTileLocation(0, 0), assets.tile`railway_right`)
 }
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     in_game = false

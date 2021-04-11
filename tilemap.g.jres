@@ -70,6 +70,18 @@
         "tilemapTile": true,
         "displayName": "water_left"
     },
+    "tile12": {
+        "data": "hwQQABAAAAC7zLu7u7vMu7vMu7u7u8y768zu7u7uzL7rzO7u7u7MvrvMu7u7u8y7u8y7u7u7zLvrzO7u7u7MvuvM7u7u7sy+u8y7u7u7zLu7zLu7u7vMu+vM7u7u7sy+68zu7u7uzL67zLu7u7vMu7vMu7u7u8y768zu7u7uzL7rzO7u7u7Mvg==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "railway"
+    },
+    "tile16": {
+        "data": "hwQQABAAAAC7zLu7u7vMu7vMuxuxu8y768zuHuHuzL7rzO4e4e7MvrvMuxuxu8y7u8y7G7G7zLvrzO4e4e7MvuvM7h7h7sy+u8y7G7G7zLu7zLsbsbvMu+vM7h7h7sy+68wRERERzL67zBsREbHMu7vMuxERu8y768zuHuHuzL7rzO7u7u7Mvg==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "railway_right"
+    },
     "level2": {
         "id": "level2",
         "mimeType": "application/mkcd-tilemap",
@@ -95,9 +107,7 @@
             "myTiles.tile2",
             "myTiles.tile3",
             "myTiles.tile4",
-            "sprites.castle.rock1",
-            "myTiles.tile10",
-            "myTiles.tile11"
+            "sprites.castle.rock1"
         ],
         "displayName": "map"
     },
