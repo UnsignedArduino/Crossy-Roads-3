@@ -293,8 +293,8 @@ in_game = true
 last_move_time = game.runtime()
 last_lane = ""
 game.onUpdateInterval(1000, function () {
-    if (false) {
-        if (game.runtime() - last_move_time > 5000) {
+    if (in_game) {
+        if (game.runtime() - last_move_time > 7000) {
             in_game = false
             if (!(sprite_eagle)) {
                 timer.after(500, function () {
@@ -345,7 +345,7 @@ game.onUpdateInterval(500, function () {
         }
     }
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(200, function () {
     if (Math.percentChance(50)) {
         if (tiles.getTilesByType(assets.tile`water_right`).length > 0) {
             sprite_log = sprites.create(assets.image`log`, SpriteKind.Log)
