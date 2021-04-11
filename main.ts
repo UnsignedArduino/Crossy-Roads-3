@@ -249,6 +249,7 @@ function make_railway_lane () {
     sprite_red_light = sprites.create(assets.image`red_light`, SpriteKind.RedLight)
     tiles.placeOnTile(sprite_red_light, tiles.getTileLocation(0, 0))
     sprite_red_light.z = 3
+    sprites.setDataNumber(sprite_red_light, "last_train_time", game.runtime())
 }
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     in_game = false
@@ -297,6 +298,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 })
 let sprite_log: Sprite = null
 let sprite_car: Sprite = null
+let sprite_train: Sprite = null
+let sprite_light: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
 let sprite_red_light: Sprite = null
@@ -315,7 +318,7 @@ in_game = true
 last_move_time = game.runtime()
 last_lane = ""
 game.onUpdateInterval(1000, function () {
-    if (in_game) {
+    if (in_game && false) {
         if (game.runtime() - last_move_time > 5000) {
             in_game = false
             if (!(sprite_eagle)) {
@@ -330,6 +333,33 @@ game.onUpdateInterval(1000, function () {
             }
         }
     }
+})
+forever(function () {
+    if (tiles.getTilesByType(assets.tile`railway_right`).length > 0) {
+        sprite_light = sprites.allOfKind(SpriteKind.RedLight)._pickRandom()
+        if (game.runtime() - sprites.readDataNumber(sprite_light, "last_train_time") > 5000) {
+            sprites.setDataNumber(sprite_light, "last_train_time", game.runtime())
+            for (let index = 0; index < 5; index++) {
+                animation.runImageAnimation(
+                sprite_light,
+                assets.animation`red_light_flashing`,
+                200,
+                false
+                )
+                pause(400)
+            }
+            sprite_light.setImage(assets.image`red_light`)
+            sprite_train = sprites.create(assets.image`train`, SpriteKind.Enemy)
+            tiles.placeOnTile(sprite_train, tiles.getTileLocation(0, tiles.locationXY(tiles.locationOfSprite(sprite_light), tiles.XY.row)))
+            sprite_train.vx = 3000
+            sprite_train.right = 0
+            sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.after(250, function () {
+                sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
+            })
+        }
+    }
+    pause(1000)
 })
 forever(function () {
     while (!(is_overlapping_kind(sprite_player, SpriteKind.Log))) {
