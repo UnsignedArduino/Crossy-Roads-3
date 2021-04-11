@@ -320,16 +320,30 @@ sprite_intro.top = 25
 sprite_intro.left = 0
 sprite_intro.z = 5
 sprite_intro.setFlag(SpriteFlag.AutoDestroy, false)
+sprite_intro.setFlag(SpriteFlag.Ghost, true)
+let sprite_play_button = sprites.create(assets.image`play_button`, SpriteKind.Title)
+sprite_play_button.x = scene.screenWidth() / 2
+sprite_play_button.bottom = scene.screenHeight() - -8
+sprite_play_button.z = 5
+sprite_play_button.setFlag(SpriteFlag.AutoDestroy, false)
+sprite_play_button.setFlag(SpriteFlag.Ghost, true)
+let option_selected = 0
 in_game = false
 timer.background(function () {
     while (!(controller.A.isPressed())) {
+        if (option_selected == 0) {
+            sprite_play_button.setImage(assets.image`play_button_highlighted`)
+        }
         pause(100)
     }
-    sprite_intro.ay = -500
-    info.setScore(0)
-    in_game = true
-    last_move_time = game.runtime()
-    last_lane = ""
+    if (option_selected == 0) {
+        sprite_intro.ay = -500
+        sprite_play_button.ay = 500
+        info.setScore(0)
+        in_game = true
+        last_move_time = game.runtime()
+        last_lane = ""
+    }
 })
 game.onUpdateInterval(1000, function () {
     if (in_game && true) {
