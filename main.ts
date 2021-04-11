@@ -318,7 +318,7 @@ in_game = true
 last_move_time = game.runtime()
 last_lane = ""
 game.onUpdateInterval(1000, function () {
-    if (in_game && false) {
+    if (in_game && true) {
         if (game.runtime() - last_move_time > 5000) {
             in_game = false
             if (!(sprite_eagle)) {
