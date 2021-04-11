@@ -328,7 +328,7 @@ sprite_play_button.z = 5
 sprite_play_button.setFlag(SpriteFlag.AutoDestroy, false)
 sprite_play_button.setFlag(SpriteFlag.Ghost, true)
 let sprite_settings_button = sprites.create(assets.image`settings_button`, SpriteKind.Player)
-sprite_settings_button.x = scene.screenWidth() * 0.7
+sprite_settings_button.x = scene.screenWidth() * 0.6
 sprite_settings_button.bottom = scene.screenHeight() - -8
 sprite_settings_button.z = 5
 sprite_settings_button.setFlag(SpriteFlag.AutoDestroy, false)
