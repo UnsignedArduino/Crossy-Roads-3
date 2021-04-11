@@ -214,22 +214,22 @@ e e e e e e e e e e e e e e e
 `;
             case "825EoiW[T(JunoK=hWkS":
             case "log":return img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. e e e e e e e e e e e e e e . 
-e e e e c c c c c c c c e e e e 
-c c c c c e e e e e e c c c c c 
-e e e e e e e e e e e e e e e e 
-c c c c c c c e e e e e c c c c 
-e e e e e e c c c c c c c e e e 
-c c c c c e e e e e e e e e c c 
-e e e e c c c c c c c c c c c e 
-e e e e e e e e e e e e e e e e 
-c c c e e c c c c c e e e c c c 
-e e c c c c e e e c c c c c e e 
-. e e e e e e e e e e e e e e . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
+................................
+................................
+.eeeeeeeeeeeeeeeeeeeeeeeeeeeeee.
+eeeecccccccceeeeeeeecccccccceeee
+ccccceeeeeecccccccccceeeeeeccccc
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+ccccccceeeeeccccccccccceeeeecccc
+eeeeeeccccccceeeeeeeeeccccccceee
+ccccceeeeeeeeeccccccceeeeeeeeecc
+eeeecccccccccceeeeeeccccccccccce
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+ccceeccccceeecccccceeccccceeeccc
+eecccceeeccccceeeecccceeecccccee
+.eeeeeeeeeeeeeeeeeeeeeeeeeeeeee.
+................................
+................................
 `;
         }
         return null;

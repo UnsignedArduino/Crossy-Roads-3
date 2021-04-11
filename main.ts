@@ -84,6 +84,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, loc
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
+        last_move_time = game.runtime()
     }
 })
 function make_road_lane () {
@@ -100,6 +101,7 @@ function make_road_lane () {
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingRight), character.rule(Predicate.FacingRight, Predicate.NotMoving))
+        last_move_time = game.runtime()
     }
 })
 function animate_chicken () {
@@ -183,6 +185,7 @@ function move_chicken (before: number, after: number) {
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingDown), character.rule(Predicate.FacingDown, Predicate.NotMoving))
+        last_move_time = game.runtime()
     }
 })
 function make_waterway_lanes () {
@@ -294,7 +297,7 @@ last_move_time = game.runtime()
 last_lane = ""
 game.onUpdateInterval(1000, function () {
     if (in_game) {
-        if (game.runtime() - last_move_time > 7000) {
+        if (game.runtime() - last_move_time > 5000) {
             in_game = false
             if (!(sprite_eagle)) {
                 timer.after(500, function () {
@@ -345,7 +348,7 @@ game.onUpdateInterval(500, function () {
         }
     }
 })
-game.onUpdateInterval(200, function () {
+game.onUpdateInterval(500, function () {
     if (Math.percentChance(50)) {
         if (tiles.getTilesByType(assets.tile`water_right`).length > 0) {
             sprite_log = sprites.create(assets.image`log`, SpriteKind.Log)
