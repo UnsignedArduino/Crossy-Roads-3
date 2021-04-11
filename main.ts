@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const TileCover = SpriteKind.create()
     export const Log = SpriteKind.create()
+    export const RedLight = SpriteKind.create()
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -212,6 +213,9 @@ function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.Log)) {
         sprite.y += tiles.tileWidth()
     }
+    for (let sprite of sprites.allOfKind(SpriteKind.RedLight)) {
+        sprite.y += tiles.tileWidth()
+    }
 }
 function make_new_lane () {
     delete_all_cover_tiles()
@@ -242,6 +246,9 @@ function make_railway_lane () {
         tiles.setTileAt(tiles.getTileLocation(col, 0), assets.tile`railway`)
     }
     tiles.setTileAt(tiles.getTileLocation(0, 0), assets.tile`railway_right`)
+    sprite_red_light = sprites.create(assets.image`red_light`, SpriteKind.RedLight)
+    tiles.placeOnTile(sprite_red_light, tiles.getTileLocation(0, 0))
+    sprite_red_light.z = 3
 }
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     in_game = false
@@ -292,6 +299,7 @@ let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
+let sprite_red_light: Sprite = null
 let chicken_speed = 0
 let sprite_player: Sprite = null
 let sprite_tile_cover: Sprite = null
