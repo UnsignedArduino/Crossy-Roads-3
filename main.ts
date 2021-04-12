@@ -471,6 +471,7 @@ let sprite_tile_cover: Sprite = null
 let sprite_high_score: TextSprite = null
 let sprite_high_score_text: Sprite = null
 let random_col = 0
+let options: string[] = []
 let last_lane = ""
 let last_move_time = 0
 let in_game = false
@@ -531,20 +532,32 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
+        options = ["      All settings", "Close", "Reset high score", "Reset all settings"]
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
-        blockMenu.showMenu(["      All settings", "Close", "Reset high score", "Reset all settings"], MenuStyle.List, MenuLocation.FullScreen)
-        blockMenu.setSelectedIndex(1)
+        blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
         blockMenu.setControlsEnabled(false)
         fade_out(1000, true)
-        blockMenu.setControlsEnabled(true)
         while (true) {
+            blockMenu.setControlsEnabled(true)
             wait_for_select()
+            blockMenu.setControlsEnabled(false)
             if (blockMenu.selectedMenuIndex() == 1) {
-                blockMenu.setControlsEnabled(false)
                 fade_in(1000, true)
                 game.reset()
+            } else if (blockMenu.selectedMenuIndex() == 2) {
+                blockMenu.closeMenu()
+                blockMenu.showMenu(["        Confirm", "Yes, reset my high score!", "No, keep it please!"], MenuStyle.List, MenuLocation.FullScreen)
+                blockMenu.setControlsEnabled(true)
+                wait_for_select()
+                blockMenu.setControlsEnabled(false)
+                if (blockMenu.selectedMenuIndex() == 1) {
+                    reset_high_score()
+                    game.showLongText("High score successfully reset!", DialogLayout.Full)
+                }
             }
+            blockMenu.closeMenu()
+            blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
         }
     }
 })
