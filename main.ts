@@ -124,6 +124,11 @@ function make_coin (col: number, row: number) {
     tiles.placeOnTile(sprite_coin, tiles.getTileLocation(col, row))
     sprite_coin.setFlag(SpriteFlag.GhostThroughWalls, true)
 }
+function game_over () {
+    timer.after(2000, function () {
+        game.over(false)
+    })
+}
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
     if (block) {
@@ -295,8 +300,8 @@ function make_railway_lane () {
 }
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     in_game = false
-    timer.after(2000, function () {
-        game.over(false)
+    timer.background(function () {
+        game_over()
     })
 })
 function move_tilemap_down () {
