@@ -130,14 +130,18 @@ function game_over (player_x: number, player_y: number) {
     sprite_photo = sprites.create(assets.image`nothing`, SpriteKind.Photo)
     new_photo = image.create(44, 44)
     new_photo.fill(1)
+    new_photo.setPixel(0, 0, 0)
+    new_photo.setPixel(43, 0, 0)
+    new_photo.setPixel(0, 43, 0)
+    new_photo.setPixel(43, 43, 0)
     spriteutils.drawTransparentImage(crop_image(screen_shot, player_x - 20, player_y - 20, player_x + 20, player_y + 20), new_photo, 2, 2)
-    sprite_photo.setImage(new_photo)
+    sprite_photo.setImage(scaling.scale2x(new_photo))
     sprite_photo.z = 5
     sprite_photo.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
     sprite_photo.setFlag(SpriteFlag.RelativeToCamera, true)
     sprite_photo.top = scene.screenHeight()
     pause(2000)
-    story.spriteMoveToLocation(sprite_photo, scene.screenWidth() / 2, scene.screenHeight() / 2, 100)
+    story.spriteMoveToLocation(sprite_photo, scene.screenWidth() / 2, scene.screenHeight() / 2, 150)
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
