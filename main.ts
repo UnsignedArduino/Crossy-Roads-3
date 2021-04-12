@@ -443,6 +443,7 @@ forever(function () {
                 tiles.placeOnTile(sprite_train, tiles.getTileLocation(0, tiles.locationXY(tiles.locationOfSprite(sprite_light), tiles.XY.row)))
                 sprite_train.vx = 3000
                 sprite_train.right = 0
+                sprite_train.z = 2
                 sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
                 timer.after(250, function () {
                     sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
