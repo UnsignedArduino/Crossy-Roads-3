@@ -559,6 +559,11 @@ timer.background(function () {
                     game.showLongText("High score successfully reset!", DialogLayout.Full)
                 }
                 blockMenu.closeMenu()
+            } else if (blockMenu.selectedMenuIndex() == 3) {
+                if (show_confirm_menu("Yes, reset everything!", "No keep my settings!")) {
+                    reset_high_score()
+                    game.showLongText("All settings have been successfully reset!", DialogLayout.Full)
+                }
             }
             blockMenu.closeMenu()
             blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
