@@ -143,6 +143,10 @@ function game_over (player_x: number, player_y: number) {
     sprite_photo.top = scene.screenHeight()
     pause(2000)
     story.spriteMoveToLocation(sprite_photo, scene.screenWidth() / 2, scene.screenHeight() / 2, 150)
+    pause(2000)
+    sprite_photo.setImage(new_photo)
+    sprite_photo.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
+    story.spriteMoveToLocation(sprite_photo, scene.screenWidth() - 2 - 22, scene.screenHeight() - 2 - 22, 150)
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
