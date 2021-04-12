@@ -56,6 +56,9 @@ function delete_all_cover_tiles () {
         sprite.destroy()
     }
 }
+function reset_high_score () {
+    blockSettings.remove("high-score")
+}
 function make_grass_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
         tiles.setWallAt(tiles.getTileLocation(col, 0), false)
@@ -99,6 +102,11 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, loc
         })
     })
 })
+function update_high_score (new_score: number) {
+    if (new_score > info.highScore()) {
+        blockSettings.writeNumber("high-score", new_score)
+    }
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
