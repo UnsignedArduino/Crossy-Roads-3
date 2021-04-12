@@ -12,7 +12,8 @@
         "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.1.1",
         "arcade-story": "github:microsoft/arcade-storytelling#v1.0.1",
         "pxt-scaling": "github:jwunderl/pxt-scaling#v0.1.0",
-        "arcade-text": "github:microsoft/arcade-text#v1.3.0"
+        "arcade-text": "github:microsoft/arcade-text#v1.3.0",
+        "block-menu": "github:riknoll/arcade-custom-menu#v0.0.1"
     },
     "files": [
         "main.blocks",

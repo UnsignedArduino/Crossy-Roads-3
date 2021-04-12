@@ -346,6 +346,12 @@ function tile_map_cover_tiles () {
     cover_tiles(assets.tile`water_left`, assets.tile`water`)
     cover_tiles(assets.tile`railway_right`, assets.tile`railway`)
 }
+function wait_for_select () {
+    selected = false
+    while (!(selected)) {
+        pause(100)
+    }
+}
 function is_overlapping_kind (target: Sprite, kind: number) {
     for (let sprite of sprites.allOfKind(kind)) {
         if (target.overlapsWith(sprite)) {
@@ -392,6 +398,9 @@ sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     timer.background(function () {
         game_over(sprite.x, sprite.y)
     })
+})
+blockMenu.onMenuOptionSelected(function (option, index) {
+    selected = true
 })
 function move_tilemap_down () {
     for (let row = 0; row <= tiles.tilemapRows() - 1; row++) {
@@ -450,6 +459,7 @@ let row_invert = 0
 let sprite_score: TextSprite = null
 let sprite_score_text: Sprite = null
 let sprite_red_light: Sprite = null
+let selected = false
 let cropped_image: Image = null
 let chicken_speed = 0
 let new_photo: Image = null
@@ -521,9 +531,28 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        game.showLongText("No settings yet!", DialogLayout.Center)
         fade_in(1000, true)
-        game.reset()
+        blockMenu.setColors(1, 15)
+        blockMenu.showMenu(["      All settings", "Close", "Reset high score", "Reset all settings"], MenuStyle.List, MenuLocation.FullScreen)
+        blockMenu.setSelectedIndex(1)
+        blockMenu.setControlsEnabled(false)
+        fade_out(1000, true)
+        blockMenu.setControlsEnabled(true)
+        while (true) {
+            wait_for_select()
+            if (blockMenu.selectedMenuIndex() == 1) {
+                blockMenu.setControlsEnabled(false)
+                fade_in(1000, true)
+                game.reset()
+            }
+        }
+    }
+})
+game.onUpdate(function () {
+    if (blockMenu.isMenuOpen()) {
+        if (blockMenu.selectedMenuIndex() == 0) {
+            blockMenu.setSelectedIndex(1)
+        }
     }
 })
 game.onUpdateInterval(1000, function () {
