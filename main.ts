@@ -309,6 +309,14 @@ function make_waterway_lanes () {
         tiles.setTileAt(tiles.getTileLocation(tiles.tilemapColumns() - 1, 0), assets.tile`water_left`)
     }
 }
+function show_confirm_menu (yes_option: string, no_option: string) {
+    blockMenu.closeMenu()
+    blockMenu.showMenu(["         Confirm", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
+    blockMenu.setControlsEnabled(true)
+    wait_for_select()
+    blockMenu.setControlsEnabled(false)
+    return blockMenu.selectedMenuIndex() == 1
+}
 function crop_image (image2: Image, from_x: number, from_y: number, to_x: number, to_y: number) {
     cropped_image = image.create(to_x - from_x, to_y - from_y)
     spriteutils.drawTransparentImage(image2, cropped_image, from_x * -1, from_y * -1)
@@ -532,7 +540,7 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        options = ["      All settings", "Close", "Reset high score", "Reset all settings"]
+        options = ["       All settings", "Close", "Reset high score", "Reset all settings"]
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
         blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
@@ -546,15 +554,11 @@ timer.background(function () {
                 fade_in(1000, true)
                 game.reset()
             } else if (blockMenu.selectedMenuIndex() == 2) {
-                blockMenu.closeMenu()
-                blockMenu.showMenu(["        Confirm", "Yes, reset my high score!", "No, keep it please!"], MenuStyle.List, MenuLocation.FullScreen)
-                blockMenu.setControlsEnabled(true)
-                wait_for_select()
-                blockMenu.setControlsEnabled(false)
-                if (blockMenu.selectedMenuIndex() == 1) {
+                if (show_confirm_menu("Yes, reset my high score!", "No, keep it please!")) {
                     reset_high_score()
                     game.showLongText("High score successfully reset!", DialogLayout.Full)
                 }
+                blockMenu.closeMenu()
             }
             blockMenu.closeMenu()
             blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
