@@ -52,6 +52,21 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSpr
     otherSprite.vy = -50
     otherSprite.lifespan = 100
 })
+function make_high_score_text () {
+    sprite_high_score_text = sprites.create(assets.image`high_score_text`, SpriteKind.Title)
+    sprite_high_score = textsprite.create("" + info.highScore(), 0, 8)
+    sprite_high_score.setOutline(1, 9)
+    sprite_high_score.setMaxFontHeight(12)
+    sprite_high_score_text.setFlag(SpriteFlag.RelativeToCamera, true)
+    sprite_high_score.setFlag(SpriteFlag.RelativeToCamera, true)
+    sprite_high_score_text.z = 5
+    sprite_high_score.z = 5
+    sprite_high_score_text.left = 5
+    sprite_high_score.left = sprite_high_score_text.right
+    sprite_high_score_text.bottom = 0
+    sprite_high_score.top = sprite_high_score_text.top
+    sprite_high_score.y += 4
+}
 function delete_all_cover_tiles () {
     for (let sprite of sprites.allOfKind(SpriteKind.TileCover)) {
         sprite.destroy()
@@ -106,7 +121,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, loc
 function update_high_score (new_score: number) {
     if (new_score > info.highScore()) {
         blockSettings.writeNumber("high-score", new_score)
+        return true
     }
+    return false
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
@@ -126,7 +143,7 @@ function make_coin (col: number, row: number) {
     sprite_photo.setFlag(SpriteFlag.GhostThroughWalls, true)
 }
 function game_over (player_x: number, player_y: number) {
-    update_high_score(info.score())
+    high_scored = update_high_score(info.score())
     screen_shot = image.screenImage().clone()
     sprite_photo = sprites.create(assets.image`nothing`, SpriteKind.Photo)
     new_photo = image.create(44, 44)
@@ -144,9 +161,19 @@ function game_over (player_x: number, player_y: number) {
     pause(2000)
     story.spriteMoveToLocation(sprite_photo, scene.screenWidth() / 2, scene.screenHeight() / 2, 150)
     pause(2000)
-    sprite_photo.setImage(new_photo)
-    sprite_photo.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
-    story.spriteMoveToLocation(sprite_photo, scene.screenWidth() - 2 - 22, scene.screenHeight() - 2 - 22, 150)
+    story.spriteMoveToLocation(sprite_photo, scene.screenWidth() - 2 - 44, scene.screenHeight() - 2 - 44, 150)
+    make_score_text()
+    sprite_score_text.vy = 150
+    sprite_score.vy = 150
+    pause(100)
+    sprite_score_text.vy = 0
+    sprite_score.vy = 0
+    make_high_score_text()
+    sprite_high_score_text.vy = 150
+    sprite_high_score.vy = 150
+    pause(300)
+    sprite_high_score_text.vy = 0
+    sprite_high_score.vy = 0
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
@@ -322,6 +349,20 @@ function make_railway_lane () {
     sprite_red_light.z = 3
     sprites.setDataNumber(sprite_red_light, "last_train_time", game.runtime())
 }
+function make_score_text () {
+    sprite_score_text = sprites.create(assets.image`score_text`, SpriteKind.Title)
+    sprite_score = textsprite.create("" + info.score(), 0, 8)
+    sprite_score.setOutline(1, 9)
+    sprite_score.setMaxFontHeight(12)
+    sprite_score_text.setFlag(SpriteFlag.RelativeToCamera, true)
+    sprite_score.setFlag(SpriteFlag.RelativeToCamera, true)
+    sprite_score_text.z = 5
+    sprite_score.z = 5
+    sprite_score_text.left = 5
+    sprite_score.left = sprite_score_text.right
+    sprite_score.bottom = 0
+    sprite_score_text.bottom = -2
+}
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     sprite.setFlag(SpriteFlag.RelativeToCamera, true)
     in_game = false
@@ -359,6 +400,7 @@ function sprite_kind_overlapped (target: Sprite, kind: number) {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (otherSprite == sprite_eagle) {
+        sprite.destroy()
         otherSprite.setFlag(SpriteFlag.Ghost, true)
     } else {
         sprite.destroy(effects.spray, 100)
@@ -373,15 +415,21 @@ let row_invert = 0
 let sprite_red_light: Sprite = null
 let cropped_image: Image = null
 let chicken_speed = 0
+let sprite_score: TextSprite = null
+let sprite_score_text: Sprite = null
 let new_photo: Image = null
 let screen_shot: Image = null
+let high_scored = false
 let sprite_photo: Sprite = null
 let sprite_tile_cover: Sprite = null
+let sprite_high_score: TextSprite = null
+let sprite_high_score_text: Sprite = null
 let random_col = 0
 let last_lane = ""
 let last_move_time = 0
 let in_game = false
 let sprite_player: Sprite = null
+reset_high_score()
 color.setPalette(
 color.Black
 )
