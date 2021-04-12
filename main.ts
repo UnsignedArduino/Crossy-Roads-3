@@ -61,11 +61,18 @@ function make_high_score_text () {
     sprite_high_score.setFlag(SpriteFlag.RelativeToCamera, true)
     sprite_high_score_text.z = 5
     sprite_high_score.z = 5
-    sprite_high_score_text.left = 5
+    sprite_high_score_text.left = 3
     sprite_high_score.left = sprite_high_score_text.right
     sprite_high_score_text.bottom = 0
     sprite_high_score.top = sprite_high_score_text.top
     sprite_high_score.y += 4
+    sprite_high_score_text.vy = 150
+    sprite_high_score.vy = 150
+    pause(250)
+    sprite_high_score_text.vy = 0
+    sprite_high_score.vy = 0
+    sprite_high_score_text.top = 20
+    sprite_high_score.top = 24
 }
 function delete_all_cover_tiles () {
     for (let sprite of sprites.allOfKind(SpriteKind.TileCover)) {
@@ -125,6 +132,17 @@ function update_high_score (new_score: number) {
     }
     return false
 }
+function make_new_high_score_text () {
+    sprite_new_high_score_text = sprites.create(assets.image`new_high_score_text`, SpriteKind.Title)
+    sprite_new_high_score_text.setFlag(SpriteFlag.RelativeToCamera, true)
+    sprite_new_high_score_text.z = 5
+    sprite_new_high_score_text.left = 3
+    sprite_new_high_score_text.bottom = 0
+    sprite_new_high_score_text.vy = 150
+    pause(500)
+    sprite_new_high_score_text.vy = 0
+    sprite_new_high_score_text.top = 45
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (in_game) {
         move_chicken(character.rule(Predicate.MovingLeft), character.rule(Predicate.FacingLeft, Predicate.NotMoving))
@@ -163,21 +181,15 @@ function game_over (player_x: number, player_y: number) {
     pause(2000)
     story.spriteMoveToLocation(sprite_photo, scene.screenWidth() - 2 - 44, scene.screenHeight() - 2 - 44, 150)
     make_score_text()
-    sprite_score_text.vy = 150
-    sprite_score.vy = 150
-    pause(100)
-    sprite_score_text.vy = 0
-    sprite_score.vy = 0
-    sprite_score_text.top = 5
-    sprite_score.top = 7
     make_high_score_text()
-    sprite_high_score_text.vy = 150
-    sprite_high_score.vy = 150
-    pause(250)
-    sprite_high_score_text.vy = 0
-    sprite_high_score.vy = 0
-    sprite_high_score_text.top = 20
-    sprite_high_score.top = 24
+    if (high_scored) {
+        make_new_high_score_text()
+    }
+    while (!(controller.anyButton.isPressed())) {
+        pause(100)
+    }
+    fade_in(1000, true)
+    game.reset()
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
@@ -362,10 +374,17 @@ function make_score_text () {
     sprite_score.setFlag(SpriteFlag.RelativeToCamera, true)
     sprite_score_text.z = 5
     sprite_score.z = 5
-    sprite_score_text.left = 5
+    sprite_score_text.left = 3
     sprite_score.left = sprite_score_text.right
     sprite_score.bottom = 0
     sprite_score_text.bottom = -2
+    sprite_score_text.vy = 150
+    sprite_score.vy = 150
+    pause(100)
+    sprite_score_text.vy = 0
+    sprite_score.vy = 0
+    sprite_score_text.top = 5
+    sprite_score.top = 7
 }
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     sprite.setFlag(SpriteFlag.RelativeToCamera, true)
@@ -410,21 +429,34 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         sprite.destroy(effects.spray, 100)
     }
 })
+// TODO: Do settings menu, which is from the menu extension. 
+// When clicked:
+// 1. Move all the words and buttons away.
+// 2. Fade in
+// 3. Open menu and disable controls
+// 4. Fade out
+// 5. Enable controls
+// 6. Menu contents:
+//     - Close
+//     - Reset high score
+// 7. When user clicks close, then fade in
+// 8. Reset
 let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_train: Sprite = null
 let sprite_light: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
+let sprite_score: TextSprite = null
+let sprite_score_text: Sprite = null
 let sprite_red_light: Sprite = null
 let cropped_image: Image = null
 let chicken_speed = 0
-let sprite_score: TextSprite = null
-let sprite_score_text: Sprite = null
 let new_photo: Image = null
 let screen_shot: Image = null
 let high_scored = false
 let sprite_photo: Sprite = null
+let sprite_new_high_score_text: Sprite = null
 let sprite_tile_cover: Sprite = null
 let sprite_high_score: TextSprite = null
 let sprite_high_score_text: Sprite = null
@@ -433,7 +465,6 @@ let last_lane = ""
 let last_move_time = 0
 let in_game = false
 let sprite_player: Sprite = null
-reset_high_score()
 color.setPalette(
 color.Black
 )
