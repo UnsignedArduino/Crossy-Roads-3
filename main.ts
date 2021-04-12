@@ -3,6 +3,7 @@ namespace SpriteKind {
     export const Log = SpriteKind.create()
     export const RedLight = SpriteKind.create()
     export const Title = SpriteKind.create()
+    export const Coin = SpriteKind.create()
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -37,7 +38,19 @@ function make_random_obstacle () {
         make_road_lane()
         last_lane = "road"
     }
+    if (Math.percentChance(20)) {
+        random_col = randint(0, tiles.tilemapColumns() - 1)
+        if (tiles.tileAtLocationEquals(tiles.getTileLocation(random_col, 0), assets.tile`grass`)) {
+            make_coin(random_col, 0)
+        }
+    }
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
+    info.changeScoreBy(1)
+    otherSprite.setImage(assets.image`plus_1`)
+    otherSprite.vy = -50
+    otherSprite.lifespan = 100
+})
 function delete_all_cover_tiles () {
     for (let sprite of sprites.allOfKind(SpriteKind.TileCover)) {
         sprite.destroy()
@@ -97,6 +110,11 @@ function fade_out (delay: number, block: boolean) {
     if (block) {
         color.pauseUntilFadeDone()
     }
+}
+function make_coin (col: number, row: number) {
+    sprite_coin = sprites.create(assets.image`coin`, SpriteKind.Coin)
+    tiles.placeOnTile(sprite_coin, tiles.getTileLocation(col, row))
+    sprite_coin.setFlag(SpriteFlag.GhostThroughWalls, true)
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
@@ -229,6 +247,9 @@ function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.RedLight)) {
         sprite.y += tiles.tileWidth()
     }
+    for (let sprite of sprites.allOfKind(SpriteKind.Coin)) {
+        sprite.y += tiles.tileWidth()
+    }
 }
 function make_new_lane () {
     delete_all_cover_tiles()
@@ -317,7 +338,9 @@ let sprite_eagle: Sprite = null
 let row_invert = 0
 let sprite_red_light: Sprite = null
 let chicken_speed = 0
+let sprite_coin: Sprite = null
 let sprite_tile_cover: Sprite = null
+let random_col = 0
 let last_lane = ""
 let last_move_time = 0
 let in_game = false
@@ -414,13 +437,15 @@ forever(function () {
             }
             sprite_light.setImage(assets.image`red_light`)
             sprite_train = sprites.create(assets.image`train`, SpriteKind.Enemy)
-            tiles.placeOnTile(sprite_train, tiles.getTileLocation(0, tiles.locationXY(tiles.locationOfSprite(sprite_light), tiles.XY.row)))
-            sprite_train.vx = 3000
-            sprite_train.right = 0
-            sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
-            timer.after(250, function () {
-                sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
-            })
+            if (sprite_train) {
+                tiles.placeOnTile(sprite_train, tiles.getTileLocation(0, tiles.locationXY(tiles.locationOfSprite(sprite_light), tiles.XY.row)))
+                sprite_train.vx = 3000
+                sprite_train.right = 0
+                sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
+                timer.after(250, function () {
+                    sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
+                })
+            }
         }
     }
     pause(1000)
