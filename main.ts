@@ -4,6 +4,7 @@ namespace SpriteKind {
     export const RedLight = SpriteKind.create()
     export const Title = SpriteKind.create()
     export const Coin = SpriteKind.create()
+    export const Photo = SpriteKind.create()
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -120,14 +121,20 @@ function fade_out (delay: number, block: boolean) {
     }
 }
 function make_coin (col: number, row: number) {
-    sprite_coin = sprites.create(assets.image`coin`, SpriteKind.Coin)
-    tiles.placeOnTile(sprite_coin, tiles.getTileLocation(col, row))
-    sprite_coin.setFlag(SpriteFlag.GhostThroughWalls, true)
+    sprite_photo = sprites.create(assets.image`coin`, SpriteKind.Coin)
+    tiles.placeOnTile(sprite_photo, tiles.getTileLocation(col, row))
+    sprite_photo.setFlag(SpriteFlag.GhostThroughWalls, true)
 }
-function game_over () {
-    timer.after(2000, function () {
-        game.over(false)
-    })
+function game_over (player_x: number, player_y: number) {
+    screen_shot = image.screenImage().clone()
+    sprite_photo = sprites.create(assets.image`nothing`, SpriteKind.Photo)
+    new_photo = image.create(42, 42)
+    new_photo.fill(1)
+    spriteutils.drawTransparentImage(crop_image(screen_shot, player_x - 20, player_y - 20, player_x + 20, player_y + 20), new_photo, 1, 1)
+    sprite_photo.setImage(new_photo)
+    sprite_photo.z = 5
+    sprite_photo.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
+    sprite_photo.setFlag(SpriteFlag.RelativeToCamera, true)
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
@@ -247,6 +254,11 @@ function make_waterway_lanes () {
         tiles.setTileAt(tiles.getTileLocation(tiles.tilemapColumns() - 1, 0), assets.tile`water_left`)
     }
 }
+function crop_image (image2: Image, from_x: number, from_y: number, to_x: number, to_y: number) {
+    cropped_image = image.create(to_x - from_x, to_y - from_y)
+    spriteutils.drawTransparentImage(image2, cropped_image, from_x * -1, from_y * -1)
+    return cropped_image
+}
 function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.Player)) {
         sprite.y += tiles.tileWidth()
@@ -299,9 +311,10 @@ function make_railway_lane () {
     sprites.setDataNumber(sprite_red_light, "last_train_time", game.runtime())
 }
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
+    sprite.setFlag(SpriteFlag.RelativeToCamera, true)
     in_game = false
     timer.background(function () {
-        game_over()
+        game_over(sprite.x, sprite.y)
     })
 })
 function move_tilemap_down () {
@@ -350,8 +363,11 @@ let sprite_light: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
 let sprite_red_light: Sprite = null
+let cropped_image: Image = null
 let chicken_speed = 0
-let sprite_coin: Sprite = null
+let new_photo: Image = null
+let screen_shot: Image = null
+let sprite_photo: Sprite = null
 let sprite_tile_cover: Sprite = null
 let random_col = 0
 let last_lane = ""
