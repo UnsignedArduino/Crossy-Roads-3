@@ -92,6 +92,18 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         last_move_time = game.runtime()
     }
 })
+function fade_out (delay: number, block: boolean) {
+    color.startFade(color.Black, color.originalPalette, delay)
+    if (block) {
+        color.pauseUntilFadeDone()
+    }
+}
+function fade_in (delay: number, block: boolean) {
+    color.startFade(color.originalPalette, color.Black, delay)
+    if (block) {
+        color.pauseUntilFadeDone()
+    }
+}
 function make_road_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
         tiles.setWallAt(tiles.getTileLocation(col, 0), false)
@@ -310,6 +322,9 @@ let last_lane = ""
 let last_move_time = 0
 let in_game = false
 let sprite_player: Sprite = null
+color.setPalette(
+color.Black
+)
 scene.setBackgroundColor(7)
 tiles.setTilemap(tilemap`map`)
 tile_map_cover_tiles()
@@ -323,18 +338,19 @@ sprite_intro.setFlag(SpriteFlag.AutoDestroy, false)
 sprite_intro.setFlag(SpriteFlag.Ghost, true)
 let sprite_play_button = sprites.create(assets.image`play_button`, SpriteKind.Title)
 sprite_play_button.x = scene.screenWidth() * 0.3
-sprite_play_button.bottom = scene.screenHeight() - -8
+sprite_play_button.bottom = scene.screenHeight() + 13
 sprite_play_button.z = 5
 sprite_play_button.setFlag(SpriteFlag.AutoDestroy, false)
 sprite_play_button.setFlag(SpriteFlag.Ghost, true)
 let sprite_settings_button = sprites.create(assets.image`settings_button`, SpriteKind.Player)
 sprite_settings_button.x = scene.screenWidth() * 0.6
-sprite_settings_button.bottom = scene.screenHeight() - -8
+sprite_settings_button.bottom = scene.screenHeight() + 13
 sprite_settings_button.z = 5
 sprite_settings_button.setFlag(SpriteFlag.AutoDestroy, false)
 sprite_settings_button.setFlag(SpriteFlag.Ghost, true)
 let option_selected = 0
 in_game = false
+fade_out(1000, false)
 timer.background(function () {
     while (!(controller.A.isPressed())) {
         if (option_selected == 0) {
@@ -361,6 +377,7 @@ timer.background(function () {
         last_lane = ""
     } else if (option_selected == 1) {
         game.showLongText("No settings yet!", DialogLayout.Center)
+        fade_in(1000, true)
         game.reset()
     }
 })
