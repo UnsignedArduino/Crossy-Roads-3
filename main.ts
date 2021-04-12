@@ -357,19 +357,19 @@ let sprite_intro = sprites.create(assets.image`title_screen`, SpriteKind.Title)
 sprite_intro.top = 25
 sprite_intro.left = 0
 sprite_intro.z = 5
-sprite_intro.setFlag(SpriteFlag.AutoDestroy, false)
+sprite_intro.setFlag(SpriteFlag.AutoDestroy, true)
 sprite_intro.setFlag(SpriteFlag.Ghost, true)
 let sprite_play_button = sprites.create(assets.image`play_button`, SpriteKind.Title)
 sprite_play_button.x = scene.screenWidth() * 0.3
 sprite_play_button.bottom = scene.screenHeight() + 13
 sprite_play_button.z = 5
-sprite_play_button.setFlag(SpriteFlag.AutoDestroy, false)
+sprite_play_button.setFlag(SpriteFlag.AutoDestroy, true)
 sprite_play_button.setFlag(SpriteFlag.Ghost, true)
 let sprite_settings_button = sprites.create(assets.image`settings_button`, SpriteKind.Player)
 sprite_settings_button.x = scene.screenWidth() * 0.6
 sprite_settings_button.bottom = scene.screenHeight() + 13
 sprite_settings_button.z = 5
-sprite_settings_button.setFlag(SpriteFlag.AutoDestroy, false)
+sprite_settings_button.setFlag(SpriteFlag.AutoDestroy, true)
 sprite_settings_button.setFlag(SpriteFlag.Ghost, true)
 let option_selected = 0
 in_game = false
