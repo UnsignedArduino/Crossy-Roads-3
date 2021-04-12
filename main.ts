@@ -126,6 +126,7 @@ function make_coin (col: number, row: number) {
     sprite_photo.setFlag(SpriteFlag.GhostThroughWalls, true)
 }
 function game_over (player_x: number, player_y: number) {
+    update_high_score(info.score())
     screen_shot = image.screenImage().clone()
     sprite_photo = sprites.create(assets.image`nothing`, SpriteKind.Photo)
     new_photo = image.create(44, 44)
