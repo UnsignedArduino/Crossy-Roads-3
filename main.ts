@@ -128,13 +128,16 @@ function make_coin (col: number, row: number) {
 function game_over (player_x: number, player_y: number) {
     screen_shot = image.screenImage().clone()
     sprite_photo = sprites.create(assets.image`nothing`, SpriteKind.Photo)
-    new_photo = image.create(42, 42)
+    new_photo = image.create(44, 44)
     new_photo.fill(1)
-    spriteutils.drawTransparentImage(crop_image(screen_shot, player_x - 20, player_y - 20, player_x + 20, player_y + 20), new_photo, 1, 1)
+    spriteutils.drawTransparentImage(crop_image(screen_shot, player_x - 20, player_y - 20, player_x + 20, player_y + 20), new_photo, 2, 2)
     sprite_photo.setImage(new_photo)
     sprite_photo.z = 5
     sprite_photo.setPosition(scene.screenWidth() / 2, scene.screenHeight() / 2)
     sprite_photo.setFlag(SpriteFlag.RelativeToCamera, true)
+    sprite_photo.top = scene.screenHeight()
+    pause(2000)
+    story.spriteMoveToLocation(sprite_photo, scene.screenWidth() / 2, scene.screenHeight() / 2, 100)
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
@@ -347,11 +350,7 @@ function sprite_kind_overlapped (target: Sprite, kind: number) {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (otherSprite == sprite_eagle) {
-        sprite.setFlag(SpriteFlag.Ghost, true)
         otherSprite.setFlag(SpriteFlag.Ghost, true)
-        sprite.setFlag(SpriteFlag.AutoDestroy, true)
-        sprite.vy = otherSprite.vy
-        sprite.y += -8
     } else {
         sprite.destroy(effects.spray, 100)
     }
