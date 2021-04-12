@@ -168,12 +168,16 @@ function game_over (player_x: number, player_y: number) {
     pause(100)
     sprite_score_text.vy = 0
     sprite_score.vy = 0
+    sprite_score_text.top = 5
+    sprite_score.top = 7
     make_high_score_text()
     sprite_high_score_text.vy = 150
     sprite_high_score.vy = 150
-    pause(300)
+    pause(250)
     sprite_high_score_text.vy = 0
     sprite_high_score.vy = 0
+    sprite_high_score_text.top = 20
+    sprite_high_score.top = 24
 }
 function fade_in (delay: number, block: boolean) {
     color.startFade(color.originalPalette, color.Black, delay)
