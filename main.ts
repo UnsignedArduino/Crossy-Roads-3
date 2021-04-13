@@ -201,6 +201,9 @@ function fade_in (delay: number, block: boolean) {
         color.pauseUntilFadeDone()
     }
 }
+function is_chinese () {
+    return language == ImageProp.chinese
+}
 function make_road_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
         tiles.setWallAt(tiles.getTileLocation(col, 0), false)
@@ -321,7 +324,11 @@ function make_waterway_lanes () {
 }
 function show_confirm_menu (yes_option: string, no_option: string) {
     blockMenu.closeMenu()
-    blockMenu.showMenu(["         Confirm", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
+    if (is_chinese()) {
+        blockMenu.showMenu(["     确认", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
+    } else {
+        blockMenu.showMenu(["         Confirm", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
+    }
     blockMenu.setControlsEnabled(true)
     wait_for_select()
     blockMenu.setControlsEnabled(false)
@@ -341,6 +348,9 @@ function crop_image (image2: Image, from_x: number, from_y: number, to_x: number
     cropped_image = image.create(to_x - from_x, to_y - from_y)
     spriteutils.drawTransparentImage(image2, cropped_image, from_x * -1, from_y * -1)
     return cropped_image
+}
+function is_english () {
+    return language == ImageProp.english
 }
 function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.Player)) {
@@ -466,18 +476,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         sprite.destroy(effects.spray, 100)
     }
 })
-// TODO: Do settings menu, which is from the menu extension. 
-// When clicked:
-// 1. Move all the words and buttons away.
-// 2. Fade in
-// 3. Open menu and disable controls
-// 4. Fade out
-// 5. Enable controls
-// 6. Menu contents:
-//     - Close
-//     - Reset high score
-// 7. When user clicks close, then fade in
-// 8. Reset
 let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_train: Sprite = null
@@ -514,7 +512,7 @@ let image_play_button: Image = null
 let image_title_screen: Image = null
 let sprite_player: Sprite = null
 let language = 0
-language = ImageProp.chinese
+language = ImageProp.english
 color.setPalette(
 color.Black
 )
@@ -572,7 +570,11 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        options = ["       All settings", "Close", "Reset high score", "Reset all settings"]
+        if (is_chinese()) {
+            options = ["    所有选项", "关闭", "重设高分", "重设所有选项"]
+        } else {
+            options = ["       All settings", "Close", "Reset high score", "Reset all settings"]
+        }
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
         blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
@@ -586,15 +588,29 @@ timer.background(function () {
                 fade_in(1000, true)
                 game.reset()
             } else if (blockMenu.selectedMenuIndex() == 2) {
-                if (show_confirm_menu("Yes, reset my high score!", "No, keep it please!")) {
-                    reset_high_score()
-                    game.showLongText("High score successfully reset!", DialogLayout.Full)
+                if (is_chinese()) {
+                    if (show_confirm_menu("是的，重设我的高分!", "不，请保留!")) {
+                        reset_high_score()
+                        game.showLongText("高分已成功重置!", DialogLayout.Full)
+                    }
+                } else {
+                    if (show_confirm_menu("Yes, reset my high score!", "No, keep it please!")) {
+                        reset_high_score()
+                        game.showLongText("High score successfully reset!", DialogLayout.Full)
+                    }
                 }
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 3) {
-                if (show_confirm_menu("Yes, reset everything!", "No keep my settings!")) {
-                    reset_high_score()
-                    game.showLongText("All settings have been successfully reset!", DialogLayout.Full)
+                if (is_chinese()) {
+                    if (show_confirm_menu("是的，重设所有内容!", "保持我的选择!")) {
+                        reset_high_score()
+                        game.showLongText("所有选项已成功重置!", DialogLayout.Full)
+                    }
+                } else {
+                    if (show_confirm_menu("Yes, reset everything!", "No keep my settings!")) {
+                        reset_high_score()
+                        game.showLongText("All settings have been successfully reset!", DialogLayout.Full)
+                    }
                 }
             }
             blockMenu.closeMenu()
