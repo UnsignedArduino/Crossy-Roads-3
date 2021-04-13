@@ -512,7 +512,11 @@ let image_play_button: Image = null
 let image_title_screen: Image = null
 let sprite_player: Sprite = null
 let language = 0
-language = ImageProp.english
+if (blockSettings.exists("language")) {
+    language = blockSettings.readNumber("language")
+} else {
+    language = ImageProp.english
+}
 color.setPalette(
 color.Black
 )
@@ -571,9 +575,9 @@ timer.background(function () {
         last_lane = ""
     } else if (option_selected == 1) {
         if (is_chinese()) {
-            options = ["    所有选项", "关闭", "重设高分", "重设所有选项"]
+            options = ["    所有选项", "关闭", "重设高分", "选择一种语言", "重设所有选项"]
         } else {
-            options = ["       All settings", "Close", "Reset high score", "Reset all settings"]
+            options = ["       All settings", "Close", "Reset high score", "Select language", "Reset all settings"]
         }
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
@@ -589,9 +593,9 @@ timer.background(function () {
                 game.reset()
             } else if (blockMenu.selectedMenuIndex() == 2) {
                 if (is_chinese()) {
-                    if (show_confirm_menu("是的，重设我的高分!", "不，请保留!")) {
+                    if (show_confirm_menu("是的，重设我的高分！", "不，请保留!")) {
                         reset_high_score()
-                        game.showLongText("高分已成功重置!", DialogLayout.Full)
+                        game.showLongText("高分已成功重置！", DialogLayout.Full)
                     }
                 } else {
                     if (show_confirm_menu("Yes, reset my high score!", "No, keep it please!")) {
@@ -601,14 +605,37 @@ timer.background(function () {
                 }
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 3) {
+                blockMenu.closeMenu()
+                if (is_chinese()) {
+                    blockMenu.showMenu(["   选择一种语言", "英文", "中文"], MenuStyle.List, MenuLocation.FullScreen)
+                } else {
+                    blockMenu.showMenu(["     Select language", "English", "Chinese"], MenuStyle.List, MenuLocation.FullScreen)
+                }
+                blockMenu.setControlsEnabled(true)
+                wait_for_select()
+                blockMenu.setControlsEnabled(false)
+                if (blockMenu.selectedMenuIndex() == 1) {
+                    blockSettings.writeNumber("language", ImageProp.english)
+                } else if (blockMenu.selectedMenuIndex() == 2) {
+                    blockSettings.writeNumber("language", ImageProp.chinese)
+                }
+                if (is_chinese()) {
+                    game.showLongText("关闭菜单以查看新语言。", DialogLayout.Full)
+                } else {
+                    game.showLongText("Close menu to see new language.", DialogLayout.Full)
+                }
+                blockMenu.closeMenu()
+            } else if (blockMenu.selectedMenuIndex() == 4) {
                 if (is_chinese()) {
                     if (show_confirm_menu("是的，重设所有内容!", "保持我的选择!")) {
                         reset_high_score()
-                        game.showLongText("所有选项已成功重置!", DialogLayout.Full)
+                        blockSettings.remove("language")
+                        game.showLongText("所有选项已成功重置！", DialogLayout.Full)
                     }
                 } else {
                     if (show_confirm_menu("Yes, reset everything!", "No keep my settings!")) {
                         reset_high_score()
+                        blockSettings.remove("language")
                         game.showLongText("All settings have been successfully reset!", DialogLayout.Full)
                     }
                 }
