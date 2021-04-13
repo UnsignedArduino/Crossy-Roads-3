@@ -57,7 +57,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSpr
     otherSprite.lifespan = 100
 })
 function make_high_score_text () {
-    sprite_high_score_text = sprites.create(assets.image`high_score_text`, SpriteKind.Title)
+    sprite_high_score_text = sprites.create(image_high_score_text, SpriteKind.Title)
     sprite_high_score = textsprite.create("" + info.highScore(), 0, 8)
     sprite_high_score.setOutline(1, 9)
     sprite_high_score.setMaxFontHeight(12)
@@ -137,7 +137,7 @@ function update_high_score (new_score: number) {
     return false
 }
 function make_new_high_score_text () {
-    sprite_new_high_score_text = sprites.create(assets.image`new_high_score_text`, SpriteKind.Title)
+    sprite_new_high_score_text = sprites.create(image_new_high_score_text, SpriteKind.Title)
     sprite_new_high_score_text.setFlag(SpriteFlag.RelativeToCamera, true)
     sprite_new_high_score_text.z = 5
     sprite_new_high_score_text.left = 3
@@ -333,6 +333,9 @@ function make_images () {
     image_play_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button_highlighted`, assets.image`play_button_highlighted_chinese`), language)
     image_settings_button = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button`, assets.image`settings_button_chinese`), language)
     image_settings_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button_highlighted`, assets.image`settings_button_highlighted_chinese`), language)
+    image_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`score_text`, assets.image`score_text_chinese`), language)
+    image_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`high_score_text`, assets.image`high_score_text_chinese`), language)
+    image_new_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`new_high_score_text`, assets.image`new_high_score_text_chinese`), language)
 }
 function crop_image (image2: Image, from_x: number, from_y: number, to_x: number, to_y: number) {
     cropped_image = image.create(to_x - from_x, to_y - from_y)
@@ -397,7 +400,7 @@ function make_railway_lane () {
     sprites.setDataNumber(sprite_red_light, "last_train_time", game.runtime())
 }
 function make_score_text () {
-    sprite_score_text = sprites.create(assets.image`score_text`, SpriteKind.Title)
+    sprite_score_text = sprites.create(image_score_text, SpriteKind.Title)
     sprite_score = textsprite.create("" + info.score(), 0, 8)
     sprite_score.setOutline(1, 9)
     sprite_score.setMaxFontHeight(12)
@@ -486,15 +489,18 @@ let sprite_score_text: Sprite = null
 let sprite_red_light: Sprite = null
 let selected = false
 let cropped_image: Image = null
+let image_score_text: Image = null
 let chicken_speed = 0
 let new_multi_lang_image: blockObject.BlockObject = null
 let new_photo: Image = null
 let screen_shot: Image = null
 let high_scored = false
 let sprite_photo: Sprite = null
+let image_new_high_score_text: Image = null
 let sprite_new_high_score_text: Sprite = null
 let sprite_tile_cover: Sprite = null
 let sprite_high_score: TextSprite = null
+let image_high_score_text: Image = null
 let sprite_high_score_text: Sprite = null
 let random_col = 0
 let options: string[] = []
@@ -508,7 +514,7 @@ let image_play_button: Image = null
 let image_title_screen: Image = null
 let sprite_player: Sprite = null
 let language = 0
-language = ImageProp.english
+language = ImageProp.chinese
 color.setPalette(
 color.Black
 )
