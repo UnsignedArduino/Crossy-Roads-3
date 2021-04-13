@@ -532,12 +532,12 @@ sprite_intro.left = 0
 sprite_intro.z = 5
 sprite_intro.setFlag(SpriteFlag.Ghost, true)
 let sprite_play_button = sprites.create(image_play_button, SpriteKind.Title)
-sprite_play_button.x = scene.screenWidth() * 0.3
+sprite_play_button.x = scene.screenWidth() * 0.25
 sprite_play_button.bottom = scene.screenHeight() + 13
 sprite_play_button.z = 5
 sprite_play_button.setFlag(SpriteFlag.Ghost, true)
 let sprite_settings_button = sprites.create(image_settings_button, SpriteKind.Title)
-sprite_settings_button.x = scene.screenWidth() * 0.6
+sprite_settings_button.x = scene.screenWidth() * 0.65
 sprite_settings_button.bottom = scene.screenHeight() + 13
 sprite_settings_button.z = 5
 sprite_settings_button.setFlag(SpriteFlag.Ghost, true)
