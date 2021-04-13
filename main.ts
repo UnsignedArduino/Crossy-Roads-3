@@ -6,6 +6,10 @@ namespace SpriteKind {
     export const Coin = SpriteKind.create()
     export const Photo = SpriteKind.create()
 }
+namespace ImageProp {
+    export const english = ImageProp.create()
+    export const chinese = ImageProp.create()
+}
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
         tiles.setWallAt(tiles.getTileLocation(col, 0), false)
@@ -264,6 +268,12 @@ function animate_chicken () {
     character.rule(Predicate.MovingRight)
     )
 }
+function make_multi_language_image (english_image: Image, chinese_image: Image) {
+    new_multi_lang_image = blockObject.create()
+    blockObject.setImageProperty(new_multi_lang_image, ImageProp.english, english_image)
+    blockObject.setImageProperty(new_multi_lang_image, ImageProp.chinese, chinese_image)
+    return new_multi_lang_image
+}
 function move_chicken (before: number, after: number) {
     if (character.matchesRule(sprite_player, character.rule(Predicate.NotMoving))) {
         chicken_speed = 5
@@ -316,6 +326,13 @@ function show_confirm_menu (yes_option: string, no_option: string) {
     wait_for_select()
     blockMenu.setControlsEnabled(false)
     return blockMenu.selectedMenuIndex() == 1
+}
+function make_images () {
+    image_title_screen = blockObject.getImageProperty(make_multi_language_image(assets.image`title_screen`, assets.image`title_screen_chinese`), language)
+    image_play_button = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button`, assets.image`play_button_chinese`), language)
+    image_play_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button_highlighted`, assets.image`play_button_highlighted_chinese`), language)
+    image_settings_button = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button`, assets.image`settings_button_chinese`), language)
+    image_settings_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button_highlighted`, assets.image`settings_button_highlighted_chinese`), language)
 }
 function crop_image (image2: Image, from_x: number, from_y: number, to_x: number, to_y: number) {
     cropped_image = image.create(to_x - from_x, to_y - from_y)
@@ -470,6 +487,7 @@ let sprite_red_light: Sprite = null
 let selected = false
 let cropped_image: Image = null
 let chicken_speed = 0
+let new_multi_lang_image: blockObject.BlockObject = null
 let new_photo: Image = null
 let screen_shot: Image = null
 let high_scored = false
@@ -482,8 +500,15 @@ let random_col = 0
 let options: string[] = []
 let last_lane = ""
 let last_move_time = 0
+let image_settings_button_highlighted: Image = null
+let image_play_button_highlighted: Image = null
 let in_game = false
+let image_settings_button: Image = null
+let image_play_button: Image = null
+let image_title_screen: Image = null
 let sprite_player: Sprite = null
+let language = 0
+language = ImageProp.english
 color.setPalette(
 color.Black
 )
@@ -492,17 +517,18 @@ tiles.setTilemap(tilemap`map`)
 tile_map_cover_tiles()
 make_chicken()
 sprite_player.y += 8
-let sprite_intro = sprites.create(assets.image`title_screen`, SpriteKind.Title)
+make_images()
+let sprite_intro = sprites.create(image_title_screen, SpriteKind.Title)
 sprite_intro.top = 25
 sprite_intro.left = 0
 sprite_intro.z = 5
 sprite_intro.setFlag(SpriteFlag.Ghost, true)
-let sprite_play_button = sprites.create(assets.image`play_button`, SpriteKind.Title)
+let sprite_play_button = sprites.create(image_play_button, SpriteKind.Title)
 sprite_play_button.x = scene.screenWidth() * 0.3
 sprite_play_button.bottom = scene.screenHeight() + 13
 sprite_play_button.z = 5
 sprite_play_button.setFlag(SpriteFlag.Ghost, true)
-let sprite_settings_button = sprites.create(assets.image`settings_button`, SpriteKind.Title)
+let sprite_settings_button = sprites.create(image_settings_button, SpriteKind.Title)
 sprite_settings_button.x = scene.screenWidth() * 0.6
 sprite_settings_button.bottom = scene.screenHeight() + 13
 sprite_settings_button.z = 5
@@ -513,11 +539,11 @@ fade_out(1000, false)
 timer.background(function () {
     while (!(controller.A.isPressed())) {
         if (option_selected == 0) {
-            sprite_play_button.setImage(assets.image`play_button_highlighted`)
-            sprite_settings_button.setImage(assets.image`settings_button`)
+            sprite_play_button.setImage(image_play_button_highlighted)
+            sprite_settings_button.setImage(image_settings_button)
         } else if (option_selected == 1) {
-            sprite_play_button.setImage(assets.image`play_button`)
-            sprite_settings_button.setImage(assets.image`settings_button_highlighted`)
+            sprite_play_button.setImage(image_play_button)
+            sprite_settings_button.setImage(image_settings_button_highlighted)
         }
         if (controller.right.isPressed() && option_selected < 1) {
             option_selected += 1
