@@ -190,6 +190,13 @@ function game_over (player_x: number, player_y: number) {
     new_photo.setPixel(43, 0, 0)
     new_photo.setPixel(0, 43, 0)
     new_photo.setPixel(43, 43, 0)
+    if (player_x - 20 < 0) {
+        player_x += Math.abs(player_x - 20)
+        player_y += -10
+    } else if (player_x + 20 > scene.screenWidth()) {
+        player_x += scene.screenWidth() - (player_x + 20)
+        player_y += -10
+    }
     spriteutils.drawTransparentImage(crop_image(screen_shot, player_x - 20, player_y - 20, player_x + 20, player_y + 20), new_photo, 2, 2)
     sprite_photo.setImage(scaling.scale2x(new_photo))
     sprite_photo.z = 5
@@ -512,6 +519,8 @@ let cropped_image: Image = null
 let image_score_text: Image = null
 let chicken_speed = 0
 let new_multi_lang_image: blockObject.BlockObject = null
+let player_y = 0
+let player_x = 0
 let new_photo: Image = null
 let screen_shot: Image = null
 let high_scored = false
