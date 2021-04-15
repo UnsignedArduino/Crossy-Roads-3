@@ -717,12 +717,14 @@ forever(function () {
     while (!(is_overlapping_kind(sprite_player, SpriteKind.Log))) {
         pause(100)
     }
-    sprite_player.vx = sprite_kind_overlapped(sprite_player, SpriteKind.Log).vx
-    timer.after(100, function () {
-        if (!(is_overlapping_kind(sprite_player, SpriteKind.Log))) {
-            sprite_player.vx = 0
-        }
-    })
+    if (character.matchesRule(sprite_player, character.rule(Predicate.NotMoving))) {
+        sprite_player.vx = sprite_kind_overlapped(sprite_player, SpriteKind.Log).vx
+        timer.after(100, function () {
+            if (!(is_overlapping_kind(sprite_player, SpriteKind.Log))) {
+                sprite_player.vx = 0
+            }
+        })
+    }
 })
 game.onUpdateInterval(500, function () {
     if (Math.percentChance(50)) {
