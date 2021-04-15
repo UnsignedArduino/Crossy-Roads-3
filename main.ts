@@ -61,6 +61,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSpr
     otherSprite.setImage(assets.image`plus_1`)
     otherSprite.vy = -50
     otherSprite.lifespan = 100
+    otherSprite.setFlag(SpriteFlag.Ghost, true)
 })
 function make_high_score_text () {
     sprite_high_score_text = sprites.create(image_high_score_text, SpriteKind.Title)
