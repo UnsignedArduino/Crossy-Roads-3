@@ -6,9 +6,15 @@ namespace SpriteKind {
     export const Coin = SpriteKind.create()
     export const Photo = SpriteKind.create()
 }
+namespace StrProp {
+    export const english = StrProp.create()
+    export const chinese = StrProp.create()
+    export const spanish = StrProp.create()
+}
 namespace ImageProp {
     export const english = ImageProp.create()
     export const chinese = ImageProp.create()
+    export const spanish = ImageProp.create()
 }
 function make_lilypad_water_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -120,6 +126,12 @@ function cover_tiles (tile: Image, image2: Image) {
         sprite_tile_cover.setFlag(SpriteFlag.Ghost, true)
     }
 }
+function make_multi_language_text (english: string, chinese: string) {
+    new_multi_lang_text = blockObject.create()
+    blockObject.setStringProperty(new_multi_lang_text, StrProp.english, english)
+    blockObject.setStringProperty(new_multi_lang_text, StrProp.chinese, chinese)
+    return new_multi_lang_text
+}
 scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, location) {
     timer.throttle("check_in_water", 50, function () {
         timer.after(50, function () {
@@ -129,6 +141,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, loc
         })
     })
 })
+function is_spanish () {
+    return image_lang == ImageProp.spanish
+}
 function update_high_score (new_score: number) {
     if (new_score > info.highScore()) {
         blockSettings.writeNumber("high-score", new_score)
@@ -202,7 +217,7 @@ function fade_in (delay: number, block: boolean) {
     }
 }
 function is_chinese () {
-    return language == ImageProp.chinese
+    return image_lang == ImageProp.chinese
 }
 function make_road_lane () {
     for (let col = 0; col <= tiles.tilemapColumns() - 1; col++) {
@@ -271,6 +286,9 @@ function animate_chicken () {
     character.rule(Predicate.MovingRight)
     )
 }
+function get_text (english: string, chinese: string) {
+    return blockObject.getStringProperty(make_multi_language_text(english, chinese), text_lang)
+}
 function make_multi_language_image (english_image: Image, chinese_image: Image) {
     new_multi_lang_image = blockObject.create()
     blockObject.setImageProperty(new_multi_lang_image, ImageProp.english, english_image)
@@ -335,14 +353,14 @@ function show_confirm_menu (yes_option: string, no_option: string) {
     return blockMenu.selectedMenuIndex() == 1
 }
 function make_images () {
-    image_title_screen = blockObject.getImageProperty(make_multi_language_image(assets.image`title_screen`, assets.image`title_screen_chinese`), language)
-    image_play_button = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button`, assets.image`play_button_chinese`), language)
-    image_play_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button_highlighted`, assets.image`play_button_highlighted_chinese`), language)
-    image_settings_button = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button`, assets.image`settings_button_chinese`), language)
-    image_settings_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button_highlighted`, assets.image`settings_button_highlighted_chinese`), language)
-    image_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`score_text`, assets.image`score_text_chinese`), language)
-    image_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`high_score_text`, assets.image`high_score_text_chinese`), language)
-    image_new_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`new_high_score_text`, assets.image`new_high_score_text_chinese`), language)
+    image_title_screen = blockObject.getImageProperty(make_multi_language_image(assets.image`title_screen`, assets.image`title_screen_chinese`), image_lang)
+    image_play_button = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button`, assets.image`play_button_chinese`), image_lang)
+    image_play_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button_highlighted`, assets.image`play_button_highlighted_chinese`), image_lang)
+    image_settings_button = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button`, assets.image`settings_button_chinese`), image_lang)
+    image_settings_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button_highlighted`, assets.image`settings_button_highlighted_chinese`), image_lang)
+    image_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`score_text`, assets.image`score_text_chinese`), image_lang)
+    image_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`high_score_text`, assets.image`high_score_text_chinese`), image_lang)
+    image_new_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`new_high_score_text`, assets.image`new_high_score_text_chinese`), image_lang)
 }
 function crop_image (image2: Image, from_x: number, from_y: number, to_x: number, to_y: number) {
     cropped_image = image.create(to_x - from_x, to_y - from_y)
@@ -350,7 +368,7 @@ function crop_image (image2: Image, from_x: number, from_y: number, to_x: number
     return cropped_image
 }
 function is_english () {
-    return language == ImageProp.english
+    return image_lang == ImageProp.english
 }
 function move_sprites_down () {
     for (let sprite of sprites.allOfKind(SpriteKind.Player)) {
@@ -496,6 +514,7 @@ let high_scored = false
 let sprite_photo: Sprite = null
 let image_new_high_score_text: Image = null
 let sprite_new_high_score_text: Sprite = null
+let new_multi_lang_text: blockObject.BlockObject = null
 let sprite_tile_cover: Sprite = null
 let sprite_high_score: TextSprite = null
 let image_high_score_text: Image = null
@@ -511,11 +530,17 @@ let image_settings_button: Image = null
 let image_play_button: Image = null
 let image_title_screen: Image = null
 let sprite_player: Sprite = null
-let language = 0
-if (blockSettings.exists("language")) {
-    language = blockSettings.readNumber("language")
+let text_lang = 0
+let image_lang = 0
+if (blockSettings.exists("image_language")) {
+    image_lang = blockSettings.readNumber("image_language")
 } else {
-    language = ImageProp.english
+    image_lang = ImageProp.english
+}
+if (blockSettings.exists("text_language")) {
+    text_lang = blockSettings.readNumber("text_language")
+} else {
+    text_lang = StrProp.english
 }
 color.setPalette(
 color.Black
@@ -574,11 +599,7 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        if (is_chinese()) {
-            options = ["    所有选项", "关闭", "重设高分", "选择一种语言", "重设所有选项"]
-        } else {
-            options = ["       All settings", "Close", "Reset high score", "Select language", "Reset all settings"]
-        }
+        options = [get_text("       All settings", "    所有选项"), get_text("Close", "关闭"), get_text("Reset high score", "重设高分"), get_text("Select language", "选择一种语言"), get_text("Reset all settings", "重设所有选项")]
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
         blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
@@ -592,52 +613,31 @@ timer.background(function () {
                 fade_in(1000, true)
                 game.reset()
             } else if (blockMenu.selectedMenuIndex() == 2) {
-                if (is_chinese()) {
-                    if (show_confirm_menu("是的，重设我的高分！", "不，请保留!")) {
-                        reset_high_score()
-                        game.showLongText("高分已成功重置！", DialogLayout.Full)
-                    }
-                } else {
-                    if (show_confirm_menu("Yes, reset my high score!", "No, keep it please!")) {
-                        reset_high_score()
-                        game.showLongText("High score successfully reset!", DialogLayout.Full)
-                    }
+                if (show_confirm_menu(get_text("Yes, reset my high score!", "是的，重设我的高分！"), get_text("No, keep it please!", "不，请保留!"))) {
+                    reset_high_score()
+                    game.showLongText(get_text("High score successfully reset!", "高分已成功重置！"), DialogLayout.Full)
                 }
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 3) {
                 blockMenu.closeMenu()
-                if (is_chinese()) {
-                    blockMenu.showMenu(["   选择一种语言", "英文", "中文"], MenuStyle.List, MenuLocation.FullScreen)
-                } else {
-                    blockMenu.showMenu(["     Select language", "English", "Chinese"], MenuStyle.List, MenuLocation.FullScreen)
-                }
+                blockMenu.showMenu([get_text("     Select language", "   选择一种语言"), get_text("English", "英文"), get_text("Chinese", "中文")], MenuStyle.List, MenuLocation.FullScreen)
                 blockMenu.setControlsEnabled(true)
                 wait_for_select()
                 blockMenu.setControlsEnabled(false)
                 if (blockMenu.selectedMenuIndex() == 1) {
-                    blockSettings.writeNumber("language", ImageProp.english)
+                    blockSettings.writeNumber("image_language", ImageProp.english)
+                    blockSettings.writeNumber("text_language", StrProp.english)
                 } else if (blockMenu.selectedMenuIndex() == 2) {
-                    blockSettings.writeNumber("language", ImageProp.chinese)
+                    blockSettings.writeNumber("image_language", ImageProp.chinese)
+                    blockSettings.writeNumber("text_language", StrProp.chinese)
                 }
-                if (is_chinese()) {
-                    game.showLongText("关闭菜单以查看新语言。", DialogLayout.Full)
-                } else {
-                    game.showLongText("Close menu to see new language.", DialogLayout.Full)
-                }
+                game.showLongText(get_text("Close menu to see new language.", "关闭菜单以查看新语言。"), DialogLayout.Full)
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 4) {
-                if (is_chinese()) {
-                    if (show_confirm_menu("是的，重设所有内容!", "保持我的选择!")) {
-                        reset_high_score()
-                        blockSettings.remove("language")
-                        game.showLongText("所有选项已成功重置！", DialogLayout.Full)
-                    }
-                } else {
-                    if (show_confirm_menu("Yes, reset everything!", "No keep my settings!")) {
-                        reset_high_score()
-                        blockSettings.remove("language")
-                        game.showLongText("All settings have been successfully reset!", DialogLayout.Full)
-                    }
+                if (show_confirm_menu(get_text("Yes, reset everything!", "是的，重设所有内容!"), get_text("No keep my settings!", "保持我的选择!"))) {
+                    reset_high_score()
+                    blockSettings.remove("language")
+                    game.showLongText(get_text("All settings have been successfully reset!", "所有选项已成功重置！"), DialogLayout.Full)
                 }
             }
             blockMenu.closeMenu()
