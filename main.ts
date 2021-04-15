@@ -290,10 +290,11 @@ function animate_chicken () {
 function get_text (english: string, chinese: string, spanish: string) {
     return blockObject.getStringProperty(make_multi_language_text(english, chinese, spanish), text_lang)
 }
-function make_multi_language_image (english_image: Image, chinese_image: Image) {
+function make_multi_language_image (english_image: Image, chinese_image: Image, spanish_image: Image) {
     new_multi_lang_image = blockObject.create()
     blockObject.setImageProperty(new_multi_lang_image, ImageProp.english, english_image)
     blockObject.setImageProperty(new_multi_lang_image, ImageProp.chinese, chinese_image)
+    blockObject.setImageProperty(new_multi_lang_image, ImageProp.spanish, spanish_image)
     return new_multi_lang_image
 }
 function move_chicken (before: number, after: number) {
@@ -356,14 +357,14 @@ function show_confirm_menu (yes_option: string, no_option: string) {
     return blockMenu.selectedMenuIndex() == 1
 }
 function make_images () {
-    image_title_screen = blockObject.getImageProperty(make_multi_language_image(assets.image`title_screen`, assets.image`title_screen_chinese`), image_lang)
-    image_play_button = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button`, assets.image`play_button_chinese`), image_lang)
-    image_play_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button_highlighted`, assets.image`play_button_highlighted_chinese`), image_lang)
-    image_settings_button = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button`, assets.image`settings_button_chinese`), image_lang)
-    image_settings_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button_highlighted`, assets.image`settings_button_highlighted_chinese`), image_lang)
-    image_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`score_text`, assets.image`score_text_chinese`), image_lang)
-    image_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`high_score_text`, assets.image`high_score_text_chinese`), image_lang)
-    image_new_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`new_high_score_text`, assets.image`new_high_score_text_chinese`), image_lang)
+    image_title_screen = blockObject.getImageProperty(make_multi_language_image(assets.image`title_screen`, assets.image`title_screen_chinese`, assets.image`title_screen_spanish`), image_lang)
+    image_play_button = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button`, assets.image`play_button_chinese`, assets.image`play_button_spanish`), image_lang)
+    image_play_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`play_button_highlighted`, assets.image`play_button_highlighted_chinese`, assets.image`play_button_highlighted_spanish`), image_lang)
+    image_settings_button = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button`, assets.image`settings_button_chinese`, assets.image`settings_button_spanish`), image_lang)
+    image_settings_button_highlighted = blockObject.getImageProperty(make_multi_language_image(assets.image`settings_button_highlighted`, assets.image`settings_button_highlighted_chinese`, assets.image`settings_button_highlighted_spanish`), image_lang)
+    image_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`score_text`, assets.image`score_text_chinese`, assets.image`score_text_spanish`), image_lang)
+    image_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`high_score_text`, assets.image`high_score_text_chinese`, assets.image`high_score_text_spanish`), image_lang)
+    image_new_high_score_text = blockObject.getImageProperty(make_multi_language_image(assets.image`new_high_score_text`, assets.image`new_high_score_text_chinese`, assets.image`new_high_score_text_spanish`), image_lang)
 }
 function crop_image (image2: Image, from_x: number, from_y: number, to_x: number, to_y: number) {
     cropped_image = image.create(to_x - from_x, to_y - from_y)
@@ -634,8 +635,7 @@ timer.background(function () {
                     blockSettings.writeNumber("image_language", ImageProp.chinese)
                     blockSettings.writeNumber("text_language", StrProp.chinese)
                 } else if (blockMenu.selectedMenuIndex() == 3) {
-                    // TODO: Actually do Spanish images
-                    blockSettings.writeNumber("image_language", ImageProp.english)
+                    blockSettings.writeNumber("image_language", ImageProp.spanish)
                     blockSettings.writeNumber("text_language", StrProp.spanish)
                 }
                 game.showLongText(get_text("Close menu to see new language.", "关闭菜单以查看新语言。", "Cierre el menú para ver el nuevo idioma."), DialogLayout.Full)
