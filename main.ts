@@ -126,10 +126,11 @@ function cover_tiles (tile: Image, image2: Image) {
         sprite_tile_cover.setFlag(SpriteFlag.Ghost, true)
     }
 }
-function make_multi_language_text (english: string, chinese: string) {
+function make_multi_language_text (english: string, chinese: string, spanish: string) {
     new_multi_lang_text = blockObject.create()
     blockObject.setStringProperty(new_multi_lang_text, StrProp.english, english)
     blockObject.setStringProperty(new_multi_lang_text, StrProp.chinese, chinese)
+    blockObject.setStringProperty(new_multi_lang_text, StrProp.spanish, spanish)
     return new_multi_lang_text
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`water`, function (sprite, location) {
@@ -286,8 +287,8 @@ function animate_chicken () {
     character.rule(Predicate.MovingRight)
     )
 }
-function get_text (english: string, chinese: string) {
-    return blockObject.getStringProperty(make_multi_language_text(english, chinese), text_lang)
+function get_text (english: string, chinese: string, spanish: string) {
+    return blockObject.getStringProperty(make_multi_language_text(english, chinese, spanish), text_lang)
 }
 function make_multi_language_image (english_image: Image, chinese_image: Image) {
     new_multi_lang_image = blockObject.create()
@@ -344,6 +345,8 @@ function show_confirm_menu (yes_option: string, no_option: string) {
     blockMenu.closeMenu()
     if (is_chinese()) {
         blockMenu.showMenu(["     确认", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
+    } else if (is_spanish()) {
+        blockMenu.showMenu(["        Confirmar", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
     } else {
         blockMenu.showMenu(["         Confirm", yes_option, no_option], MenuStyle.List, MenuLocation.FullScreen)
     }
@@ -599,7 +602,7 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        options = [get_text("       All settings", "    所有选项"), get_text("Close", "关闭"), get_text("Reset high score", "重设高分"), get_text("Select language", "选择一种语言"), get_text("Reset all settings", "重设所有选项")]
+        options = [get_text("       All settings", "    所有选项", "    Ajustes completos"), get_text("Close", "关闭", "Cerrar"), get_text("Reset high score", "重设高分", "Resetear Puntuación"), get_text("Select language", "选择一种语言", "Selecionar lenguage"), get_text("Reset all settings", "重设所有选项", "Restablecer todos los ajustes")]
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
         blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
@@ -613,14 +616,14 @@ timer.background(function () {
                 fade_in(1000, true)
                 game.reset()
             } else if (blockMenu.selectedMenuIndex() == 2) {
-                if (show_confirm_menu(get_text("Yes, reset my high score!", "是的，重设我的高分！"), get_text("No, keep it please!", "不，请保留!"))) {
+                if (show_confirm_menu(get_text("Yes, reset my high score!", "是的，重设我的高分！", "¡Si, resetea mi puntuación!"), get_text("No, keep it please!", "不，请保留!", "¡No, mantenla porfa!"))) {
                     reset_high_score()
-                    game.showLongText(get_text("High score successfully reset!", "高分已成功重置！"), DialogLayout.Full)
+                    game.showLongText(get_text("High score successfully reset!", "高分已成功重置！", "¡La puntuación más alta se restableció con éxito!"), DialogLayout.Full)
                 }
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 3) {
                 blockMenu.closeMenu()
-                blockMenu.showMenu([get_text("     Select language", "   选择一种语言"), get_text("English", "英文"), get_text("Chinese", "中文")], MenuStyle.List, MenuLocation.FullScreen)
+                blockMenu.showMenu([get_text("     Select language", "   选择一种语言", "   Selecionar lenguage"), get_text("English", "英文", "Ingles"), get_text("Chinese", "中文", "Chino"), get_text("Spanish", "西班牙语", "Español")], MenuStyle.List, MenuLocation.FullScreen)
                 blockMenu.setControlsEnabled(true)
                 wait_for_select()
                 blockMenu.setControlsEnabled(false)
@@ -630,14 +633,19 @@ timer.background(function () {
                 } else if (blockMenu.selectedMenuIndex() == 2) {
                     blockSettings.writeNumber("image_language", ImageProp.chinese)
                     blockSettings.writeNumber("text_language", StrProp.chinese)
+                } else if (blockMenu.selectedMenuIndex() == 3) {
+                    // TODO: Actually do Spanish images
+                    blockSettings.writeNumber("image_language", ImageProp.english)
+                    blockSettings.writeNumber("text_language", StrProp.spanish)
                 }
-                game.showLongText(get_text("Close menu to see new language.", "关闭菜单以查看新语言。"), DialogLayout.Full)
+                game.showLongText(get_text("Close menu to see new language.", "关闭菜单以查看新语言。", "Cierre el menú para ver el nuevo idioma."), DialogLayout.Full)
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 4) {
-                if (show_confirm_menu(get_text("Yes, reset everything!", "是的，重设所有内容!"), get_text("No keep my settings!", "保持我的选择!"))) {
+                if (show_confirm_menu(get_text("Yes, reset everything!", "是的，重设所有内容!", "¡Si, Restablece todo!"), get_text("No keep my settings!", "保持我的选择!", "¡No, Manten mis ajustes!"))) {
                     reset_high_score()
-                    blockSettings.remove("language")
-                    game.showLongText(get_text("All settings have been successfully reset!", "所有选项已成功重置！"), DialogLayout.Full)
+                    blockSettings.remove("image_language")
+                    blockSettings.remove("text_language")
+                    game.showLongText(get_text("All settings have been successfully reset!", "所有选项已成功重置！", "¡Todos los ajustes se han restablecido correctamente!"), DialogLayout.Full)
                 }
             }
             blockMenu.closeMenu()
