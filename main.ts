@@ -482,6 +482,10 @@ function make_score_text () {
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     sprite.setFlag(SpriteFlag.RelativeToCamera, true)
     in_game = false
+    sprite_shadow = sprites.readDataSprite(sprite, "shadow")
+    if (sprite_shadow) {
+        sprite_shadow.destroy()
+    }
     timer.background(function () {
         game_over(sprite.x, sprite.y)
     })
@@ -508,6 +512,9 @@ function make_chicken () {
     tiles.placeOnRandomTile(sprite_player, assets.tile`start`)
     tiles.setTileAt(tiles.locationOfSprite(sprite_player), assets.tile`grass`)
     scene.cameraFollowSprite(sprite_player)
+    if (shadows) {
+        make_shadow(sprite_player, assets.image`chicken_shadow`)
+    }
 }
 function sprite_kind_overlapped (target: Sprite, kind: number) {
     for (let sprite of sprites.allOfKind(kind)) {
@@ -529,9 +536,9 @@ let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_train: Sprite = null
 let sprite_light: Sprite = null
-let sprite_shadow: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
+let sprite_shadow: Sprite = null
 let sprite_score: TextSprite = null
 let sprite_score_text: Sprite = null
 let sprite_red_light: Sprite = null
@@ -563,6 +570,7 @@ let image_settings_button: Image = null
 let image_play_button: Image = null
 let image_title_screen: Image = null
 let sprite_player: Sprite = null
+let shadows = false
 let text_lang = 0
 let image_lang = 0
 if (blockSettings.exists("image_language")) {
@@ -575,7 +583,7 @@ if (blockSettings.exists("text_language")) {
 } else {
     text_lang = StrProp.english
 }
-let shadows = read_bool("shadows")
+shadows = read_bool("shadows")
 color.setPalette(
 color.Black
 )
@@ -700,19 +708,25 @@ timer.background(function () {
     }
 })
 game.onUpdate(function () {
-    if (blockMenu.isMenuOpen()) {
-        if (blockMenu.selectedMenuIndex() == 0) {
-            blockMenu.setSelectedIndex(1)
-        }
-    }
-})
-game.onUpdate(function () {
     if (shadows) {
+        for (let sprite of sprites.allOfKind(SpriteKind.Player)) {
+            sprite_shadow = sprites.readDataSprite(sprite, "shadow")
+            if (sprite_shadow) {
+                sprite_shadow.setPosition(sprite.x, sprite.bottom)
+            }
+        }
         for (let sprite of sprites.allOfKind(SpriteKind.Enemy)) {
             sprite_shadow = sprites.readDataSprite(sprite, "shadow")
             if (sprite_shadow) {
                 sprite_shadow.setPosition(sprite.x, sprite.bottom)
             }
+        }
+    }
+})
+game.onUpdate(function () {
+    if (blockMenu.isMenuOpen()) {
+        if (blockMenu.selectedMenuIndex() == 0) {
+            blockMenu.setSelectedIndex(1)
         }
     }
 })
