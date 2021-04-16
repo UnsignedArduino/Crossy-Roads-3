@@ -327,6 +327,7 @@ function move_chicken (before: number, after: number) {
             } else if (before == character.rule(Predicate.MovingUp)) {
                 sprite_player.vy = tiles.tileWidth() * -1 * chicken_speed * 0.9
             }
+            music.playTone(740, music.beat(BeatFraction.Sixteenth))
             timer.after(1000 / chicken_speed, function () {
                 sprite_player.vx = 0
                 sprite_player.vy = 0
@@ -489,6 +490,11 @@ sprites.onDestroyed(SpriteKind.Player, function (sprite) {
         sprite_shadow.destroy()
     }
     timer.background(function () {
+        music.playTone(740, music.beat(BeatFraction.Sixteenth))
+        music.rest(music.beat(BeatFraction.Sixteenth))
+        music.playTone(740, music.beat(BeatFraction.Half))
+    })
+    timer.background(function () {
         game_over(sprite.x, sprite.y)
     })
 })
@@ -534,6 +540,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         sprite.destroy(effects.spray, 100)
     }
 })
+let random_note = 0
 let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_train: Sprite = null
@@ -773,6 +780,12 @@ forever(function () {
             sprite_train.right = 0
             sprite_train.z = 2
             sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.background(function () {
+                timer.after(1000, function () {
+                    music.stopAllSounds()
+                })
+                music.footstep.loop()
+            })
             timer.after(250, function () {
                 sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
             })
@@ -850,5 +863,16 @@ game.onUpdateInterval(500, function () {
                 sprite_log.setFlag(SpriteFlag.AutoDestroy, true)
             })
         }
+    }
+})
+game.onUpdateInterval(500, function () {
+    if (Math.percentChance(sprites.allOfKind(SpriteKind.Enemy).length)) {
+        timer.background(function () {
+            random_note = [554, 208, 277, 139, 659]._pickRandom()
+            for (let index = 0; index < randint(1, 3); index++) {
+                music.playTone(random_note, music.beat(BeatFraction.Half))
+                music.rest(music.beat(BeatFraction.Sixteenth))
+            }
+        })
     }
 })
