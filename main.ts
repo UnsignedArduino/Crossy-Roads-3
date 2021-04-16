@@ -593,6 +593,9 @@ if (blockSettings.exists("text_language")) {
     text_lang = StrProp.english
 }
 shadows = read_bool("shadows")
+if (!(read_bool("sound"))) {
+    music.setVolume(0)
+}
 color.setPalette(
 color.Black
 )
@@ -655,6 +658,7 @@ timer.background(function () {
         get_text("Close", "关闭", "Cerrar"),
         get_text("Reset high score", "重设高分", "Resetear Puntuación"),
         get_text("Toggle shadows", "切换阴影", "Cambiar sombras"),
+        get_text("Toggle sound", "切换声音", "Alternar sonido"),
         get_text("Select language", "选择一种语言", "Selecionar lenguage"),
         get_text("Reset all settings", "重设所有选项", "Restablecer todos los ajustes")
         ]
@@ -686,6 +690,15 @@ timer.background(function () {
                 }
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 4) {
+                if (show_confirm_menu(get_text("Enable sound", "启用声音", "Activar sonidos"), get_text("Disable sound", "禁用声音", "Desactivar sonidos"))) {
+                    save_bool("sound", true)
+                    game.showLongText(get_text("Sound enabled.", "启用声音。", "Sonido habilitado."), DialogLayout.Full)
+                } else {
+                    save_bool("sound", false)
+                    game.showLongText(get_text("Sound disabled.", "声音已禁用。", "Sonido desactivado."), DialogLayout.Full)
+                }
+                blockMenu.closeMenu()
+            } else if (blockMenu.selectedMenuIndex() == 5) {
                 blockMenu.closeMenu()
                 blockMenu.showMenu([get_text("     Select language", "   选择一种语言", "   Selecionar lenguage"), get_text("English", "英文", "Ingles"), get_text("Chinese", "中文", "Chino"), get_text("Spanish", "西班牙语", "Español")], MenuStyle.List, MenuLocation.FullScreen)
                 blockMenu.setControlsEnabled(true)
@@ -703,7 +716,7 @@ timer.background(function () {
                 }
                 game.showLongText(get_text("Close menu to see new language.", "关闭菜单以查看新语言。", "Cierre el menú para ver el nuevo idioma."), DialogLayout.Full)
                 blockMenu.closeMenu()
-            } else if (blockMenu.selectedMenuIndex() == 5) {
+            } else if (blockMenu.selectedMenuIndex() == 6) {
                 if (show_confirm_menu(get_text("Yes, reset everything!", "是的，重设所有内容!", "¡Si, Restablece todo!"), get_text("No keep my settings!", "保持我的选择!", "¡No, Manten mis ajustes!"))) {
                     reset_high_score()
                     blockSettings.remove("image_language")
