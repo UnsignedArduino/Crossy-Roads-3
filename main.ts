@@ -749,15 +749,16 @@ forever(function () {
             }
             sprite_light.setImage(assets.image`red_light`)
             sprite_train = sprites.create(assets.image`train`, SpriteKind.Enemy)
-            if (sprite_train) {
-                tiles.placeOnTile(sprite_train, tiles.getTileLocation(0, tiles.locationXY(tiles.locationOfSprite(sprite_light), tiles.XY.row)))
-                sprite_train.vx = 3000
-                sprite_train.right = 0
-                sprite_train.z = 2
-                sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
-                timer.after(250, function () {
-                    sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
-                })
+            tiles.placeOnTile(sprite_train, tiles.getTileLocation(0, tiles.locationXY(tiles.locationOfSprite(sprite_light), tiles.XY.row)))
+            sprite_train.vx = 3000
+            sprite_train.right = 0
+            sprite_train.z = 2
+            sprite_train.setFlag(SpriteFlag.GhostThroughWalls, true)
+            timer.after(250, function () {
+                sprite_train.setFlag(SpriteFlag.AutoDestroy, true)
+            })
+            if (shadows) {
+                make_shadow(sprite_train, assets.image`train_shadow`)
             }
         }
     }
