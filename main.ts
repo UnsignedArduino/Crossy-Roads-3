@@ -404,6 +404,13 @@ function move_sprites_down () {
         sprite.y += tiles.tileWidth()
     }
 }
+function make_shadow (sprite: Sprite, shadow: Image) {
+    sprites.setDataSprite(sprite, "shadow", shader.createImageShaderSprite(shadow, shader.ShadeLevel.One))
+    sprites.readDataSprite(sprite, "shadow").setPosition(sprite.x, sprite.bottom)
+    sprites.readDataSprite(sprite, "shadow").z = sprite.z - 1
+    sprites.readDataSprite(sprite, "shadow").setFlag(SpriteFlag.AutoDestroy, true)
+    sprites.readDataSprite(sprite, "shadow").setFlag(SpriteFlag.Ghost, true)
+}
 function save_bool (name: string, value: boolean) {
     if (value) {
         blockSettings.writeNumber(name, 1)
