@@ -177,7 +177,7 @@ function fade_out (delay: number, block: boolean) {
     }
 }
 function read_bool (name: string) {
-    if (blockSettings.exists("")) {
+    if (blockSettings.exists(name)) {
         return blockSettings.readNumber(name) == 1
     } else {
         return false
@@ -529,6 +529,7 @@ let sprite_log: Sprite = null
 let sprite_car: Sprite = null
 let sprite_train: Sprite = null
 let sprite_light: Sprite = null
+let sprite_shadow: Sprite = null
 let sprite_eagle: Sprite = null
 let row_invert = 0
 let sprite_score: TextSprite = null
@@ -705,6 +706,16 @@ game.onUpdate(function () {
         }
     }
 })
+game.onUpdate(function () {
+    if (shadows) {
+        for (let sprite of sprites.allOfKind(SpriteKind.Enemy)) {
+            sprite_shadow = sprites.readDataSprite(sprite, "shadow")
+            if (sprite_shadow) {
+                sprite_shadow.setPosition(sprite.x, sprite.bottom)
+            }
+        }
+    }
+})
 game.onUpdateInterval(1000, function () {
     if (in_game && true) {
         if (game.runtime() - last_move_time > 5000) {
@@ -776,6 +787,9 @@ game.onUpdateInterval(500, function () {
             timer.after(250, function () {
                 sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
             })
+            if (shadows) {
+                make_shadow(sprite_car, assets.image`car_shadow`)
+            }
         }
     } else {
         if (tiles.getTilesByType(assets.tile`road_left`).length > 0) {
@@ -787,6 +801,9 @@ game.onUpdateInterval(500, function () {
             timer.after(250, function () {
                 sprite_car.setFlag(SpriteFlag.AutoDestroy, true)
             })
+            if (shadows) {
+                make_shadow(sprite_car, assets.image`car_shadow`)
+            }
         }
     }
 })

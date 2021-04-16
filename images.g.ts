@@ -1177,6 +1177,15 @@ c d d 1 1 d d c
 .969...9986996888699968886999.9688699.969.....9686996966
 .........999.9999.....999......9999...999......99...9999
 `;
+            case "!e3^iF7yVv,#qQqk+RPs":
+            case "car_shadow":return img`
+. f f f f f f f f f f f f f f . 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+. . f f f f f f f f f f f f . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+`;
         }
         return null;
     })
