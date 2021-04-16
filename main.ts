@@ -567,6 +567,7 @@ if (blockSettings.exists("text_language")) {
 } else {
     text_lang = StrProp.english
 }
+let shadows = read_bool("shadows")
 color.setPalette(
 color.Black
 )
@@ -624,7 +625,14 @@ timer.background(function () {
         last_move_time = game.runtime()
         last_lane = ""
     } else if (option_selected == 1) {
-        options = [get_text("       All settings", "    所有选项", "    Ajustes completos"), get_text("Close", "关闭", "Cerrar"), get_text("Reset high score", "重设高分", "Resetear Puntuación"), get_text("Select language", "选择一种语言", "Selecionar lenguage"), get_text("Reset all settings", "重设所有选项", "Restablecer todos los ajustes")]
+        options = [
+        get_text("       All settings", "    所有选项", "    Ajustes completos"),
+        get_text("Close", "关闭", "Cerrar"),
+        get_text("Reset high score", "重设高分", "Resetear Puntuación"),
+        get_text("Toggle shadows", "切换阴影", "Cambiar sombras"),
+        get_text("Select language", "选择一种语言", "Selecionar lenguage"),
+        get_text("Reset all settings", "重设所有选项", "Restablecer todos los ajustes")
+        ]
         fade_in(1000, true)
         blockMenu.setColors(1, 15)
         blockMenu.showMenu(options, MenuStyle.List, MenuLocation.FullScreen)
@@ -644,6 +652,15 @@ timer.background(function () {
                 }
                 blockMenu.closeMenu()
             } else if (blockMenu.selectedMenuIndex() == 3) {
+                if (show_confirm_menu(get_text("Enable shadows", "启用阴影", "Habilitar sombras"), get_text("Disable shadows", "禁用阴影", "Desactivar sombras"))) {
+                    save_bool("shadows", true)
+                    game.showLongText(get_text("Shadows enabled.", "启用阴影。", "Sombras habilitadas."), DialogLayout.Full)
+                } else {
+                    save_bool("shadows", false)
+                    game.showLongText(get_text("Shadows disabled.", "阴影被禁用。", "Sombras desactivadas."), DialogLayout.Full)
+                }
+                blockMenu.closeMenu()
+            } else if (blockMenu.selectedMenuIndex() == 4) {
                 blockMenu.closeMenu()
                 blockMenu.showMenu([get_text("     Select language", "   选择一种语言", "   Selecionar lenguage"), get_text("English", "英文", "Ingles"), get_text("Chinese", "中文", "Chino"), get_text("Spanish", "西班牙语", "Español")], MenuStyle.List, MenuLocation.FullScreen)
                 blockMenu.setControlsEnabled(true)
@@ -661,7 +678,7 @@ timer.background(function () {
                 }
                 game.showLongText(get_text("Close menu to see new language.", "关闭菜单以查看新语言。", "Cierre el menú para ver el nuevo idioma."), DialogLayout.Full)
                 blockMenu.closeMenu()
-            } else if (blockMenu.selectedMenuIndex() == 4) {
+            } else if (blockMenu.selectedMenuIndex() == 5) {
                 if (show_confirm_menu(get_text("Yes, reset everything!", "是的，重设所有内容!", "¡Si, Restablece todo!"), get_text("No keep my settings!", "保持我的选择!", "¡No, Manten mis ajustes!"))) {
                     reset_high_score()
                     blockSettings.remove("image_language")
