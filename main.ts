@@ -408,8 +408,10 @@ function make_shadow (sprite: Sprite, shadow: Image) {
     sprites.setDataSprite(sprite, "shadow", shader.createImageShaderSprite(shadow, shader.ShadeLevel.One))
     sprites.readDataSprite(sprite, "shadow").setPosition(sprite.x, sprite.bottom)
     sprites.readDataSprite(sprite, "shadow").z = sprite.z - 1
-    sprites.readDataSprite(sprite, "shadow").setFlag(SpriteFlag.AutoDestroy, true)
     sprites.readDataSprite(sprite, "shadow").setFlag(SpriteFlag.Ghost, true)
+    timer.after(500, function () {
+        sprites.readDataSprite(sprite, "shadow").setFlag(SpriteFlag.AutoDestroy, true)
+    })
 }
 function save_bool (name: string, value: boolean) {
     if (value) {
@@ -742,6 +744,9 @@ game.onUpdateInterval(1000, function () {
                     sprite_eagle.bottom = 0
                     sprite_eagle.z = 2
                     sprite_eagle.vy = 200
+                    if (shadows) {
+                        make_shadow(sprite_eagle, assets.image`eagle_shadow`)
+                    }
                 })
             }
         }
