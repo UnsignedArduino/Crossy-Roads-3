@@ -176,6 +176,13 @@ function fade_out (delay: number, block: boolean) {
         color.pauseUntilFadeDone()
     }
 }
+function read_bool (name: string) {
+    if (blockSettings.exists("")) {
+        return blockSettings.readNumber(name) == 1
+    } else {
+        return false
+    }
+}
 function make_coin (col: number, row: number) {
     sprite_photo = sprites.create(assets.image`coin`, SpriteKind.Coin)
     tiles.placeOnTile(sprite_photo, tiles.getTileLocation(col, row))
@@ -395,6 +402,13 @@ function move_sprites_down () {
     }
     for (let sprite of sprites.allOfKind(SpriteKind.Coin)) {
         sprite.y += tiles.tileWidth()
+    }
+}
+function save_bool (name: string, value: boolean) {
+    if (value) {
+        blockSettings.writeNumber(name, 1)
+    } else {
+        blockSettings.writeNumber(name, 0)
     }
 }
 function make_new_lane () {
